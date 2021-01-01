@@ -1,0 +1,34 @@
+.Navbar {
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-between;
+    
+    background-color: aqua;
+    
+    height: 6vh;
+    width: 100vw;
+}
+
+.Option {
+    width: 7vw;
+    text-align: left;
+    
+    font-size: 2.5vh;
+}
+
+.LoginRegisterContainer {
+    margin-top: 1vh;
+    display: flex;
+    flex-direction: row;
+    column-gap: 2vw;
+    width: 14vw;
+
+    justify-content: end;
+}
+
+.HomeContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
