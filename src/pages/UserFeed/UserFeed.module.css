@@ -1,0 +1,5 @@
+.UserFeed {
+        display: flex;
+        flex-direction: row;
+        height: 94vh;
+}

@@ -4,7 +4,7 @@
 
     justify-content: space-between;
     
-    background-color: aqua;
+    background-color: #a9d1b7;
     
     height: 6vh;
     width: 100vw;
@@ -13,8 +13,14 @@
 .Option {
     width: 7vw;
     text-align: left;
-    
+    cursor: pointer;
+
+
     font-size: 2.5vh;
+}
+
+.OptionContainer {
+    width: 7vw;
 }
 
 .LoginRegisterContainer {
@@ -24,11 +30,18 @@
     column-gap: 2vw;
     width: 14vw;
 
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 .HomeContainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.Logo {
+    height: 100%;
+    width: 10%;
+
+    cursor: pointer;
 }

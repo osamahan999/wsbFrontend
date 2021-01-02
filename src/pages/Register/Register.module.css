@@ -1,0 +1,39 @@
+.Register {
+    display: flex;
+    flex-direction: row;
+    height: 94vh;
+}
+
+.ContentContainer {
+    height: 94vh;
+    width: 40vw;
+    background-color: #2d543b;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: center;
+}
+
+.RegisterInputsContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10vh;
+}
+
+.RegisterButton{
+    cursor: pointer;
+    border: 1px solid black;
+    background-color: seagreen;
+
+    border-radius: 5px 5px 5px 5px;
+    height: 3vh;
+
+}
+
+.ResponseDiv {
+
+    color:red;
+    height:4vh;
+    width: 40vh;
+}
