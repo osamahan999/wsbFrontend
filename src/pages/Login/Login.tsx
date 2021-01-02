@@ -21,7 +21,11 @@ function Login(props: any) {
             }).then((response: AxiosResponse) => {
                 setMessage("Success");
 
-                localStorage.setItem('token', response.data.token);
+                let now = new Date();
+                now.setTime(now.getTime() + 1000 * 36000); //not woring TODO: FIX this
+
+                let cookie = "token = " + response.data.token + "; SameSite=None; Secure; expires=" + now.toUTCString();
+                document.cookie = cookie;
                 props.setUser(response.data);
                 console.log(response);
 
