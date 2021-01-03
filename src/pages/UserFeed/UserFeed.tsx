@@ -90,14 +90,19 @@ function UserFeed(props: any) {
                         }
 
                         onChange={(event, value) => {
-                            console.log(value);
+                            console.log(value.symbol);
+                            props.setCurrentStock(value.symbol);
                         }}
+
 
                     />
 
 
                     <button onClick={() => {
-                        alert('consider urself yolod');
+
+
+                        props.setCurrentPage('stock');
+
                     }}>find yolo</button>
 
 

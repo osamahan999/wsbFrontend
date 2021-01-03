@@ -1,0 +1,11 @@
+
+.ContentContainer {
+    width:40vw;
+    background-color: rgba(30, 155, 68, 0.479);
+}
+
+.Stock {
+    display: flex;
+    flex-direction: row;
+    height: 94vh;
+}

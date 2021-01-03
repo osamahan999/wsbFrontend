@@ -7,16 +7,19 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import { AxiosError, AxiosResponse } from 'axios';
 import UserFeed from './pages/UserFeed/UserFeed';
+import Stock from './pages/Stock/Stock';
 
 const axios = require('axios');
 
 function App() {
 
-  const [currentPage, setCurrentPage] = useState('userfeed');
+  const [currentPage, setCurrentPage] = useState('home');
 
   const [currentUser, setCurrentUser] = useState({});
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [currentStockInFocus, setCurrentStockInFocus] = useState<string>();
 
   useEffect(() => {
 
@@ -73,7 +76,14 @@ function App() {
         {currentPage == "login" && <Login setUser={(e: JSON) => setCurrentUser(e)} />}
         {currentPage == "register" && <Register />}
 
-        {currentPage == "userfeed" && <UserFeed user={currentUser} />}
+        {currentPage == "userfeed" &&
+          <UserFeed
+            user={currentUser}
+            setCurrentStock={(e: string) => setCurrentStockInFocus(e)}
+            setCurrentPage={(e: string) => setCurrentPage(e)}
+          />}
+        {currentPage == "stock" && <Stock stock={currentStockInFocus} />}
+
       </div>
 
 
