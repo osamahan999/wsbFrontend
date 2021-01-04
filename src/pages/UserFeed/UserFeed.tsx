@@ -8,7 +8,6 @@ import styles from './UserFeed.module.css';
 import { TextField } from '@material-ui/core';
 
 const axios = require('axios');
-const api = require('../../config');
 
 
 function UserFeed(props: any) {
@@ -32,20 +31,12 @@ function UserFeed(props: any) {
 
         if (searchInput.length > 0) {
 
-            axios.get("https://sandbox.tradier.com/v1/markets/search", {
+            axios.get("http://localhost:5000/stockData/searchBySymbol", {
                 params: {
-                    'q': searchInput,
-                    'indexes': false
-                },
-                headers: {
-                    'Authorization': 'Bearer ' + api.getToken(),
-                    'Accept': 'application/json'
+                    'input': searchInput
                 }
             }).then((response: AxiosResponse) => {
-                let responseStocks = (response.data.securities.security);
-                let i = responseStocks.length;
-                i > 4 ? setStocksInDropdown(responseStocks.slice(0, 4)) : setStocksInDropdown(responseStocks);
-
+                (response.data.length == undefined || response.data.length == 0) ? setStocksInDropdown([]) : setStocksInDropdown(response.data);
             }).catch((err: AxiosError) => {
                 setStocksInDropdown([]);
 
@@ -90,7 +81,6 @@ function UserFeed(props: any) {
                         }
 
                         onChange={(event, value) => {
-                            console.log(value.symbol);
                             props.setCurrentStock(value.symbol);
                         }}
 

@@ -6,7 +6,6 @@ import Sidefiller from '../../components/sidefiller/Sidefiller';
 import styles from './Stock.module.css';
 
 const axios = require('axios');
-const api = require('../../config');
 
 
 function Stock(props: any) {
@@ -15,21 +14,13 @@ function Stock(props: any) {
     const [currentStockOptions, setCurrentStockOptions] = useState<Array<JSON>>([]);
 
     useEffect(() => {
-        axios.get("https://sandbox.tradier.com/v1/markets/quotes", {
+        axios.get("http://localhost:5000/stockData/getStockQuote", {
             params: {
-                'symbols': props.stock,
-                'greeks': true
-            },
-            headers: {
-                'Authorization': 'Bearer ' + api.getToken(),
-                'Accept': 'application/json'
+                'symbol': props.stock
             }
         }).then((response: AxiosResponse) => {
-            setCurrentStock(response.data.quotes.quote);
-            console.log(response.data.quotes.quote);
-
-
-
+            setCurrentStock(response.data);
+            console.log(response.data);
         }).catch((err: AxiosError) => {
             console.log(err);
 
@@ -38,26 +29,26 @@ function Stock(props: any) {
 
 
     useEffect(() => {
-        axios.get("https://sandbox.tradier.com/v1/markets/options/chains", {
-            params: {
-                'symbol': props.stock,
-                'expiration': "2021-01-08",
-                'greeks': true
-            },
-            headers: {
-                'Authorization': 'Bearer ' + api.getToken(),
-                'Accept': 'application/json'
-            }
-        }).then((response: AxiosResponse) => {
-            setCurrentStockOptions(response.data);
-            console.log(response);
+        // axios.get("https://sandbox.tradier.com/v1/markets/options/chains", {
+        //     params: {
+        //         'symbol': props.stock,
+        //         'expiration': "2021-01-08",
+        //         'greeks': true
+        //     },
+        //     headers: {
+        //         'Authorization': 'Bearer ' + api.getToken(),
+        //         'Accept': 'application/json'
+        //     }
+        // }).then((response: AxiosResponse) => {
+        //     setCurrentStockOptions(response.data);
+        //     console.log(response);
 
 
 
-        }).catch((err: AxiosError) => {
-            console.log(err);
+        // }).catch((err: AxiosError) => {
+        //     console.log(err);
 
-        })
+        // })
     }, [currentStock])
 
 
