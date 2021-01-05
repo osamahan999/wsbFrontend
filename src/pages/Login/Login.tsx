@@ -22,12 +22,11 @@ function Login(props: any) {
                 setMessage("Success");
 
                 let now = new Date();
-                now.setTime(now.getTime() + 1000 * 36000); //not woring TODO: FIX this
+                now.setTime(now.getTime() + (1000 * 3600000)); //lasts 3.6 million seconds
 
                 let cookie = "token = " + response.data.token + "; SameSite=None; Secure; expires=" + now.toUTCString();
                 document.cookie = cookie;
                 props.setUser(response.data);
-                console.log(response);
 
                 //add token and shit to localstorage
             }).catch((err: AxiosError) => {

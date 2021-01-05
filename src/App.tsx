@@ -34,9 +34,9 @@ function App() {
         setCurrentUser(response.data[0]);
         setCurrentPage('userfeed');
         setIsLoggedIn(true);
-        console.log(currentUser);
+
       }).catch((err: AxiosError) => {
-        console.log(err);
+        alert(err);
       })
     }
 
@@ -44,9 +44,21 @@ function App() {
 
   }, [])
 
+  useEffect(() => {
+    if (JSON.stringify(currentUser) == '{}') {
+      setCurrentPage('home')
+      setIsLoggedIn(false);
+    } else {
+      setCurrentPage('userfeed');
+      setIsLoggedIn(true);
+    }
+
+  }, [currentUser])
+
 
   /**
    * Returns the token from the cookies
+   * or fail if no cookie with token
    */
   const getToken = () => {
 
@@ -66,9 +78,28 @@ function App() {
     return ret;
   }
 
+
+  const logout = () => {
+    let token = getToken();
+
+    axios.post("http://localhost:5000/user/logout", {
+      token: token
+
+    }).then((response: AxiosResponse) => {
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
+      setCurrentUser({});
+      setIsLoggedIn(false);
+      setCurrentPage('home');
+
+    }).catch((err: AxiosError) => {
+      alert(err.response);
+    })
+  }
+
   return (
     <div className={styles.App}>
-      <Navbar isLoggedIn={isLoggedIn} currentPage={currentPage} setCurrentPage={(e: string) => setCurrentPage(e)} />
+      <Navbar isLoggedIn={isLoggedIn} logOut={() => logout()} currentPage={currentPage} setCurrentPage={(e: string) => setCurrentPage(e)} />
       <div>
         {currentPage == "home" && <Home />}
 
