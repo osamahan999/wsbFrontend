@@ -11,7 +11,9 @@ const axios = require('axios');
 function Stock(props: any) {
 
     const [currentStock, setCurrentStock] = useState<JSON | any>();
-    const [currentStockOptions, setCurrentStockOptions] = useState<Array<JSON>>([]);
+    const [optionExpirations, setOptionExpirations] = useState<Array<string>>([]);
+    const [pulledOptions, setPulledOptions] = useState<Array<JSON>>([]);
+    const [optionInView, setOptionInView] = useState<JSON | any>();
 
     useEffect(() => {
         axios.get("http://localhost:5000/stockData/getStockQuote", {
@@ -20,7 +22,6 @@ function Stock(props: any) {
             }
         }).then((response: AxiosResponse) => {
             setCurrentStock(response.data);
-            console.log(response.data);
         }).catch((err: AxiosError) => {
             console.log(err);
 
@@ -29,28 +30,34 @@ function Stock(props: any) {
 
 
     useEffect(() => {
-        // axios.get("https://sandbox.tradier.com/v1/markets/options/chains", {
-        //     params: {
-        //         'symbol': props.stock,
-        //         'expiration': "2021-01-08",
-        //         'greeks': true
-        //     },
-        //     headers: {
-        //         'Authorization': 'Bearer ' + api.getToken(),
-        //         'Accept': 'application/json'
-        //     }
-        // }).then((response: AxiosResponse) => {
-        //     setCurrentStockOptions(response.data);
-        //     console.log(response);
+        axios.get("http://localhost:5000/stockData/getExpirations", {
+            params: {
+                'symbol': props.stock
+            }
+        }).then((response: AxiosResponse) => {
+            setOptionExpirations(response.data);
 
+        }).catch((err: AxiosError) => {
+            setOptionExpirations([]);
 
-
-        // }).catch((err: AxiosError) => {
-        //     console.log(err);
-
-        // })
+        })
     }, [currentStock])
 
+    const getOptions = (symbol: string, date: string) => {
+        axios.get("http://localhost:5000/stockData/getOptionsOnDate", {
+            params: {
+                'symbol': symbol,
+                'expiration': date,
+                'optionType': 'call'
+            }
+        }).then((response: AxiosResponse) => {
+            setPulledOptions(response.data);
+
+        }).catch((err: AxiosError) => {
+            setPulledOptions([]);
+
+        })
+    }
 
 
     return (
@@ -62,14 +69,72 @@ function Stock(props: any) {
 
             <div className={styles.ContentContainer}>
                 {currentStock != undefined &&
-                    <div>
-                        <h1>{currentStock.description}</h1>
-                        <h1>open: ${currentStock.open}</h1>
-                        <h1>close: ${currentStock.close}</h1>
-                        <h1>volume: {currentStock.volume}</h1>
-                        <h1>Current Cost: ${currentStock.last}</h1>
+                    <div className={styles.container}>
+                        <div className={styles.StockData}>
+                            <h1>{currentStock.description}</h1>
+                            <h1>open: ${currentStock.open}</h1>
+                            <h1>close: ${currentStock.close}</h1>
+                            <h1>volume: {currentStock.volume}</h1>
+                            <h1>Current Cost: ${currentStock.last}</h1>
+
+                            <br></br>
+                        </div>
+
+                        <h1>Options</h1>
+
+                        <div className={styles.OptionsContainer}>
+
+                            <select >
+                                {(optionExpirations != undefined && optionExpirations.length != 0) ? <option>Select an option</option> : <option>No options For {props.stock}</option>}
+
+                                {(optionExpirations != undefined && optionExpirations.length != 0) &&
+                                    optionExpirations.map((date) => {
+                                        return (
+                                            <option className={styles.Option}
+                                                onClick={() => getOptions(props.stock, date)}>
+                                                {date}</option>
+                                        );
+                                    })}
+                            </select>
 
 
+                        </div>
+
+                        <div className={styles.PulledOptions}>
+                            <div className={styles.DescriptionContainer}>
+                                {(pulledOptions != undefined || pulledOptions != []) && pulledOptions.map((option: any) => {
+                                    return (<p onClick={() => setOptionInView(option)} className={styles.Option}>{option.description + " at $" + option.last}</p>)
+                                })}
+
+                            </div>
+                            {optionInView != undefined &&
+                                <div className={styles.OptionDetailsContainer}>
+                                    <h2>Option Details</h2>
+                                    <p>{optionInView.description}</p>
+
+                                    <p>Volume: {optionInView.volume}</p>
+                                    <p>Ask ($): {optionInView.ask}</p>
+
+                                    <p>Contract Size: {optionInView.contract_size}</p>
+                                    <p>Low : ${optionInView.low} -- $High: {optionInView.high} </p>
+
+                                    <div>
+                                        <h2>Greeks</h2>
+                                        {true &&
+                                            <div className={styles.GreeksContainer}>
+                                                {Object.keys(optionInView.greeks).map((key) => {
+                                                    return (<p>{key + ": " + optionInView.greeks[key]}</p>)
+                                                })}
+                                            </div>
+
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                            }
+                        </div>
                     </div>
                 }
 

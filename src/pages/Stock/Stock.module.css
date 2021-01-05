@@ -9,3 +9,65 @@
     flex-direction: row;
     height: 94vh;
 }
+
+.OptionsContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 5%;
+    justify-content: center;
+    height: 5%;
+
+}
+
+.Option {
+    border: 1px solid black;
+    cursor: pointer;
+    width:80%
+}
+
+.PulledOptions {
+
+    display: flex;
+
+    height:40%;
+    justify-content: center;
+
+    margin-top: 2.5%;
+    box-shadow: 5px 5px 5px 5px darkolivegreen;
+
+
+}
+
+
+.container {
+    height:100%;
+    overflow-y: hidden;
+}
+
+.StockData {
+    height:40%;
+    overflow-y: auto;
+}
+
+.DescriptionContainer {
+    width: 50%;
+    overflow-y:auto;
+
+    display: flex;
+    flex-direction: column;
+
+
+    
+}
+
+
+.OptionDetailsContainer {
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+
+
+
+}
