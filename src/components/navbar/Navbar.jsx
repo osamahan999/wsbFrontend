@@ -24,7 +24,7 @@ function Navbar(props) {
       {props.isLoggedIn &&
         <div className={styles.UserData}>
           <p className={styles.Data}>Username: {props.currentUser.username}</p>
-          <p className={styles.Data}>Your tendie funds: {props.currentUser.total_money}</p>
+          <p className={styles.Data}>Your tendie funds: ${props.currentUser.total_money}</p>
 
         </div>
       }

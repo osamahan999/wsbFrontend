@@ -50,19 +50,19 @@
 .UserData {
     display: flex;
     flex-direction: row;
-    width: 15vw;
-    
+    width: calc(20vw - 10vh);
+    height: 80%;
     justify-content:flex-end;
     text-align: left;
 
     column-gap: 5%;
 
-    font-size: 1.5vh;
+    font-size: calc(.7vw + .5vh);
 }
 
 
 .Data {
     box-shadow: 1px 1px 4px 1px green;
-    width: 80%;
-    height: 55%;
+    height: 100%;
+    margin: 0px;
 }

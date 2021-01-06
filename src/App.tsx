@@ -145,7 +145,9 @@ function App() {
           />}
         {currentPage == "stock" &&
           <Stock stock={currentStockInFocus}
-            updateNavbar={() => updateNavbar(cookieToken.getToken())} />
+            updateNavbar={() => updateNavbar(cookieToken.getToken())}
+            currentUser={currentUser}
+          />
         }
 
       </div>
