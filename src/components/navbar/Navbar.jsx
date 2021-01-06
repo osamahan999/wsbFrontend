@@ -7,6 +7,7 @@ import logo from '../../assets/logo.jpeg';
 function Navbar(props) {
 
 
+
   return (
     <div className={styles.Navbar}>
       <div className={styles.HomeContainer}>
@@ -19,6 +20,14 @@ function Navbar(props) {
         }}></img>
       </div>
 
+
+      {props.isLoggedIn &&
+        <div className={styles.UserData}>
+          <p className={styles.Data}>Username: {props.currentUser.username}</p>
+          <p className={styles.Data}>Your tendie funds: {props.currentUser.total_money}</p>
+
+        </div>
+      }
 
       {!props.isLoggedIn ?
         <div className={styles.LoginRegisterContainer}>
@@ -35,6 +44,7 @@ function Navbar(props) {
         </div>
         :
         <div className={styles.LoginRegisterContainer}>
+
           <div className={styles.Option}>Profile</div>
           <div className={styles.Option} onClick={() => {
             props.logOut();

@@ -61,7 +61,6 @@ function UserFeed(props: any) {
                 {/* search bar */}
                 <div className={styles.SearchbarContainer}>
 
-                    <div className={styles.searchCaption}>Search</div>
 
                     <Autocomplete
                         id="combo-box-demo"
@@ -74,7 +73,7 @@ function UserFeed(props: any) {
                         style={{ width: 300 }}
                         renderInput={(params) =>
                             <TextField {...params}
-                                label="Search Stocks"
+                                label="Search by Ticker"
                                 onChange={(e) => { setSearchInput(e.target.value); }}
                                 variant="outlined"
                             />

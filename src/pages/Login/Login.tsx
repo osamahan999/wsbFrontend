@@ -11,15 +11,23 @@ function Login(props: any) {
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
 
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const handleSubmit = () => {
         if (username == '' || password == '') setMessage("Cannot have empty input");
         else {
+
+            //tell client loading 
+            setIsLoading(true);
+
+
             axios.post("http://localhost:5000/user/loginWithoutToken", {
                 username: username,
                 password: password
 
             }).then((response: AxiosResponse) => {
                 setMessage("Success");
+
 
                 let now = new Date();
                 now.setTime(now.getTime() + (1000 * 3600000)); //lasts 3.6 million seconds
@@ -28,15 +36,34 @@ function Login(props: any) {
                 document.cookie = cookie;
                 props.setUser(response.data);
 
+                setIsLoading(false);
+
                 //add token and shit to localstorage
             }).catch((err: AxiosError) => {
                 if (err.response != null) setMessage(err.response.data);
+                setIsLoading(false);
+
+
             })
         }
 
 
 
     }
+
+
+    /**
+     * If isLoading ->
+     *  return (<div> big ass cock</div>)
+     */
+
+    //uhh do i put it here?
+
+    if (isLoading) {
+        return (<div>Logging you In</div>);
+    }
+
+
 
     return (
 

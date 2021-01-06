@@ -6,11 +6,17 @@ import Sidefiller from '../../components/sidefiller/Sidefiller';
 import styles from './Stock.module.css';
 
 const axios = require('axios');
+const cookieToken = require('../../helper');
 
 
 function Stock(props: any) {
 
     const [currentStock, setCurrentStock] = useState<JSON | any>();
+
+    const [userPw, setUserPw] = useState<string>('');
+    const [amtStocksToPurchase, setAmtStocksToPurchase] = useState<number>(0);
+    const [message, setMessage] = useState<string>('');
+
     const [optionExpirations, setOptionExpirations] = useState<Array<string>>([]);
     const [pulledOptions, setPulledOptions] = useState<Array<JSON>>([]);
     const [optionInView, setOptionInView] = useState<JSON | any>();
@@ -43,6 +49,29 @@ function Stock(props: any) {
         })
     }, [currentStock])
 
+    const purchaseStock = () => {
+        if (amtStocksToPurchase > 0) {
+            axios.post("http://localhost:5000/transaction/purchaseStock", {
+                token: cookieToken.getToken(),
+                password: userPw,
+                stockSymbol: currentStock.symbol,
+                stockName: currentStock.description,
+                stockPrice: currentStock.last,
+                amtOfStocks: amtStocksToPurchase,
+                exchange: currentStock.exch
+            }).then((response: AxiosResponse) => {
+
+                setMessage(response.data);
+
+                props.updateNavbar();
+
+            }).catch((err: AxiosError) => {
+
+                setMessage("Error purchasing");
+            })
+        }
+    }
+
     const getOptions = (symbol: string, date: string) => {
         axios.get("http://localhost:5000/stockData/getOptionsOnDate", {
             params: {
@@ -71,12 +100,34 @@ function Stock(props: any) {
                 {currentStock != undefined &&
                     <div className={styles.container}>
                         <div className={styles.StockData}>
-                            <h1>{currentStock.description}</h1>
-                            <h1>open: ${currentStock.open}</h1>
-                            <h1>close: ${currentStock.close}</h1>
-                            <h1>volume: {currentStock.volume}</h1>
-                            <h1>Current Cost: ${currentStock.last}</h1>
+                            <h2>{currentStock.description}</h2>
+                            <h2>open: ${currentStock.open}</h2>
+                            <h2>close: ${currentStock.close}</h2>
+                            <h2>volume: {currentStock.volume}</h2>
+                            <h2>Current Cost: ${currentStock.last}</h2>
+                            <h2 className={styles.Error}>{message}</h2>
 
+                            <div>
+
+                                <div className={styles.Container}>
+                                    <p>Amt to buy:</p><input className={styles.Amt} onChange={(e) => {
+                                        let amt: number = +e.target.value;
+                                        console.log(amt);
+                                        if (!isNaN(amt)) {
+                                            setAmtStocksToPurchase(amt);
+                                            setMessage('');
+                                        }
+                                        else {
+                                            setMessage("Can only take in numbers that are greater than 0");
+                                            setAmtStocksToPurchase(-1);
+                                        }
+
+                                    }}></input>
+
+                                    <p>Your password:</p>
+                                    <input onChange={(e) => setUserPw(e.target.value)}></input>
+                                </div>
+                                <button onClick={() => purchaseStock()}>Purchase {props.stock}</button></div>
                             <br></br>
                         </div>
 
@@ -85,7 +136,8 @@ function Stock(props: any) {
                         <div className={styles.OptionsContainer}>
 
                             <select >
-                                {(optionExpirations != undefined && optionExpirations.length != 0) ? <option>Select an option</option> : <option>No options For {props.stock}</option>}
+                                {(optionExpirations != undefined && optionExpirations.length != 0) ?
+                                    <option>Select an option</option> : <option>No options For {props.stock}</option>}
 
                                 {(optionExpirations != undefined && optionExpirations.length != 0) &&
                                     optionExpirations.map((date) => {
@@ -149,7 +201,7 @@ function Stock(props: any) {
             <Sidefiller />
 
 
-        </div>
+        </div >
     );
 }
 

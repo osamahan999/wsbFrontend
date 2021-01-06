@@ -9,78 +9,98 @@ import { AxiosError, AxiosResponse } from 'axios';
 import UserFeed from './pages/UserFeed/UserFeed';
 import Stock from './pages/Stock/Stock';
 
+const cookieToken = require('./helper');
+
 const axios = require('axios');
 
 function App() {
 
   const [currentPage, setCurrentPage] = useState('home');
 
-  const [currentUser, setCurrentUser] = useState({});
-
+  const [currentUser, setCurrentUser] = useState<JSON | any>({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  //for when logging out 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [currentStockInFocus, setCurrentStockInFocus] = useState<string>();
 
   useEffect(() => {
 
-    let token = getToken();
-
+    let token = cookieToken.getToken();
 
     if (token != 'fail') {
-      axios.post("http://localhost:5000/user/loginWithToken", {
-        token: token
+      setIsLoading(true);
 
-      }).then((response: AxiosResponse) => {
-        setCurrentUser(response.data[0]);
-        setCurrentPage('userfeed');
-        setIsLoggedIn(true);
+      logIn(token);
 
-      }).catch((err: AxiosError) => {
-        alert(err);
-      })
     }
-
-
-
   }, [])
 
+
+  const logIn = (token: string) => {
+
+    axios.post("http://localhost:5000/user/loginWithToken", {
+      token: token
+
+    }).then((response: AxiosResponse) => {
+      setCurrentUser(response.data[0]);
+      setCurrentPage('userfeed');
+      setIsLoggedIn(true);
+
+      setIsLoading(false);
+
+    }).catch((err: AxiosError) => {
+      alert(err);
+      setIsLoading(false);
+
+    })
+  }
+
+  /**
+   * Just like logIn, except does no updates except to currentUser
+   * @param token 
+   */
+  const updateNavbar = (token: string) => {
+    axios.post("http://localhost:5000/user/loginWithToken", {
+      token: token
+
+    }).then((response: AxiosResponse) => {
+      setCurrentUser(response.data[0]);
+
+    }).catch((err: AxiosError) => {
+      alert(err);
+
+    })
+  }
+
+  //can be deleted now?
   useEffect(() => {
+
+
     if (JSON.stringify(currentUser) == '{}') {
       setCurrentPage('home')
       setIsLoggedIn(false);
+
+    } else if (currentPage == 'stock') {
+      setIsLoggedIn(true);
+
     } else {
       setCurrentPage('userfeed');
       setIsLoggedIn(true);
     }
 
+
   }, [currentUser])
 
 
-  /**
-   * Returns the token from the cookies
-   * or fail if no cookie with token
-   */
-  const getToken = () => {
 
-    let cookies = document.cookie.split(';');
-    let ret = '';
-
-    if (cookies[0] != "") {
-      cookies.forEach((keyPair) => {
-        let subArray: Array<string> = keyPair.split('=');
-        let key: string = subArray[0].trim();
-        let value: string = subArray[1].trim();
-
-        if (key == "token") ret = value;
-      })
-    } else return 'fail';
-
-    return ret;
-  }
 
 
   const logout = () => {
-    let token = getToken();
+    let token = cookieToken.getToken();
+
+    setIsLoading(true);
 
     axios.post("http://localhost:5000/user/logout", {
       token: token
@@ -91,15 +111,25 @@ function App() {
       setCurrentUser({});
       setIsLoggedIn(false);
       setCurrentPage('home');
+      setIsLoading(false);
 
     }).catch((err: AxiosError) => {
       alert(err.response);
+      setIsLoading(false);
+
     })
   }
 
+  if (isLoading) return (<div className={styles.LoadingDiv}>Loading</div>);
+
   return (
     <div className={styles.App}>
-      <Navbar isLoggedIn={isLoggedIn} logOut={() => logout()} currentPage={currentPage} setCurrentPage={(e: string) => setCurrentPage(e)} />
+      <Navbar isLoggedIn={isLoggedIn}
+        currentUser={currentUser}
+        logOut={() => logout()}
+        currentPage={currentPage}
+        setCurrentPage={(e: string) => setCurrentPage(e)}
+      />
       <div>
         {currentPage == "home" && <Home />}
 
@@ -113,7 +143,10 @@ function App() {
             setCurrentStock={(e: string) => setCurrentStockInFocus(e)}
             setCurrentPage={(e: string) => setCurrentPage(e)}
           />}
-        {currentPage == "stock" && <Stock stock={currentStockInFocus} />}
+        {currentPage == "stock" &&
+          <Stock stock={currentStockInFocus}
+            updateNavbar={() => updateNavbar(cookieToken.getToken())} />
+        }
 
       </div>
 
@@ -122,5 +155,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
