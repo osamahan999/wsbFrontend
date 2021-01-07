@@ -1,6 +1,8 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import React, { useState } from 'react';
-import Sidefiller from '../../components/sidefiller/Sidefiller';
+
+import SidefillerLeft from '../../components/sidefiller/SidefillerLeft';
+import SidefillerRight from '../../components/sidefiller/SidefillerRight';
 
 import styles from './Login.module.css';
 
@@ -69,7 +71,7 @@ function Login(props: any) {
 
         <div className={styles.Login}>
 
-            <Sidefiller />
+            <SidefillerLeft />
             <div className={styles.ContentContainer}>
                 <div>
 
@@ -94,7 +96,7 @@ function Login(props: any) {
                 </div>
 
             </div>
-            <Sidefiller />
+            <SidefillerRight />
 
 
         </div>

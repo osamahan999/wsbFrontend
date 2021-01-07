@@ -4,7 +4,11 @@
 
     justify-content: space-between;
     
-    background-color: #a9d1b7;
+    background: rgb(113,83,184);
+    background: -moz-linear-gradient(0deg, rgba(113,83,184,1) 36%, rgba(151,83,184,1) 99%);
+    background: -webkit-linear-gradient(0deg, rgba(113,83,184,1) 36%, rgba(151,83,184,1) 99%);
+    background: linear-gradient(0deg, rgba(113,83,184,1) 36%, rgba(151,83,184,1) 99%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#7153b8",endColorstr="#9753b8",GradientType=1); 
     
     height: 6vh;
     width: 100vw;

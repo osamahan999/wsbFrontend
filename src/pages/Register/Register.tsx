@@ -1,6 +1,9 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import React, { useState } from 'react';
-import Sidefiller from '../../components/sidefiller/Sidefiller';
+
+import SidefillerLeft from '../../components/sidefiller/SidefillerLeft';
+import SidefillerRight from '../../components/sidefiller/SidefillerRight';
+
 
 import styles from './Register.module.css';
 
@@ -36,7 +39,7 @@ function Register(props: any) {
 
         <div className={styles.Register}>
 
-            <Sidefiller />
+            <SidefillerLeft />
             <div className={styles.ContentContainer}>
                 <div>
 
@@ -65,7 +68,7 @@ function Register(props: any) {
                 </div>
 
             </div>
-            <Sidefiller />
+            <SidefillerRight />
 
 
         </div>

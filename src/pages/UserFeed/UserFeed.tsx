@@ -1,6 +1,10 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
-import Sidefiller from '../../components/sidefiller/Sidefiller';
+
+
+import SidefillerLeft from '../../components/sidefiller/SidefillerLeft';
+import SidefillerRight from '../../components/sidefiller/SidefillerRight';
+
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -54,7 +58,7 @@ function UserFeed(props: any) {
 
         <div className={styles.UserFeed}>
 
-            <Sidefiller />
+            <SidefillerLeft />
 
 
             <div className={styles.ContentContainer}>
@@ -97,7 +101,7 @@ function UserFeed(props: any) {
 
                 </div>
             </div>
-            <Sidefiller />
+            <SidefillerRight />
 
 
         </div>

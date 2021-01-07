@@ -1,7 +1,9 @@
 import Modal from "@material-ui/core/Modal";
 import { AxiosError, AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
-import Sidefiller from '../../components/sidefiller/Sidefiller';
+
+
+
 
 
 import styles from './Stock.module.css';

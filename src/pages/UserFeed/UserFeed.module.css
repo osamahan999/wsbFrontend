@@ -6,7 +6,13 @@
 
 .ContentContainer {
         width:40vw;
-        background-color: rgba(30, 155, 68, 0.479);
+background: rgb(151,83,184);
+background: -moz-linear-gradient(90deg, rgba(151,83,184,1) 1%, rgba(83,138,184,1) 20%, rgba(83,138,184,1) 50%, rgba(83,138,184,1) 80%, rgba(151,83,184,1) 99%);
+background: -webkit-linear-gradient(90deg, rgba(151,83,184,1) 1%, rgba(83,138,184,1) 20%, rgba(83,138,184,1) 50%, rgba(83,138,184,1) 80%, rgba(151,83,184,1) 99%);
+background: linear-gradient(90deg, rgba(151,83,184,1) 1%, rgba(83,138,184,1) 20%, rgba(83,138,184,1) 50%, rgba(83,138,184,1) 80%, rgba(151,83,184,1) 99%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#9753b8",endColorstr="#9753b8",GradientType=1);
+
+
 }
 
 .Searchbar {
@@ -25,3 +31,4 @@
         justify-content: center;
         margin-right: 2%;
 }
+

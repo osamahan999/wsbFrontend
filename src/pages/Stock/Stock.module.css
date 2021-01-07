@@ -2,7 +2,6 @@
 .ContentContainer {
     width:30vw;
     height: 100%;
-    background-color: rgba(30, 155, 68, 0.479);
 
     overflow-y: auto;
 
@@ -13,6 +12,11 @@
     flex-direction: row;
     height: 94vh;
     justify-content: space-evenly;   
+    background: rgb(113,83,184);
+    background: -moz-linear-gradient(90deg, rgba(113,83,184,1) 0%, rgba(67,115,176,1) 50%, rgba(113,83,184,1) 100%);
+    background: -webkit-linear-gradient(90deg, rgba(113,83,184,1) 0%, rgba(67,115,176,1) 50%, rgba(113,83,184,1) 100%);
+    background: linear-gradient(90deg, rgba(113,83,184,1) 0%, rgba(67,115,176,1) 50%, rgba(113,83,184,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#7153b8",endColorstr="#7153b8",GradientType=1); 
 }
 
 .ModalContainer {
@@ -60,7 +64,6 @@
 
     width:40vw;
     height: 100%;
-    background-color: rgba(35, 145, 71, 0.479);
     
     justify-content: left;
 

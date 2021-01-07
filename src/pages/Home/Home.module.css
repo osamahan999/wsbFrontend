@@ -4,6 +4,8 @@
 
     width: 100vw;
     height:94vh;
+
+    
     
 }
 
@@ -12,7 +14,19 @@
     width: 40vw;
     height: 94vh;
 
-    background-color: rgb(206, 150, 150);
-
+    overflow-y: hidden;
     text-align: left;
+
+    background-color: rgba(151,83,184,1);
+}
+
+.Image {
+    width: 32vw;
+ 
+    height: 75.2vh;
+}
+
+.CarouselDiv {
+    text-align: center;
+    font-size: calc(1vw + 1vh);
 }

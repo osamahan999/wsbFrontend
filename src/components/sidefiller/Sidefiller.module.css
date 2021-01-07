@@ -1,5 +1,19 @@
-.Sidefiller {
+.SidefillerLeft {
     width: 30vw;
     height: 94vh;
-    background-color: #5da676;
+    background: rgb(113,83,184);
+background: -moz-linear-gradient(90deg, rgba(113,83,184,1) 15%, rgba(151,83,184,1) 80%, rgba(151,83,184,1) 100%);
+background: -webkit-linear-gradient(90deg, rgba(113,83,184,1) 15%, rgba(151,83,184,1) 80%, rgba(151,83,184,1) 100%);
+background: linear-gradient(90deg, rgba(113,83,184,1) 15%, rgba(151,83,184,1) 80%, rgba(151,83,184,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#7153b8",endColorstr="#9753b8",GradientType=1);   
+}
+
+.SidefillerRight {
+    width: 30vw;
+    height: 94vh;
+    background: rgb(151,83,184);
+    background: -moz-linear-gradient(90deg, rgba(151,83,184,1) 0%, rgba(151,83,184,1) 20%, rgba(113,83,184,1) 85%);
+    background: -webkit-linear-gradient(90deg, rgba(151,83,184,1) 0%, rgba(151,83,184,1) 20%, rgba(113,83,184,1) 85%);
+    background: linear-gradient(90deg, rgba(151,83,184,1) 0%, rgba(151,83,184,1) 20%, rgba(113,83,184,1) 85%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#9753b8",endColorstr="#7153b8",GradientType=1);
 }
