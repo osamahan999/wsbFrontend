@@ -45,6 +45,12 @@
     width:80%
 }
 
+.OptionType {
+    border: 1px solid black;
+    width: 50%;
+    text-align: center;
+}
+
 .PulledOptions {
 
     display: flex;
@@ -81,7 +87,6 @@
     
 }
 
-
 .OptionDetailsContainer {
     height:100%;
     display: flex;
@@ -102,3 +107,12 @@
     flex-direction: row;
     justify-content: center;
 }
+.StockPositions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+    row-gap: 2vh;
+    width: 80%;
+}
+

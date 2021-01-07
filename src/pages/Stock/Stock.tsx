@@ -34,7 +34,16 @@ function Stock(props: any) {
     const [optionType, setOptionType] = useState<string>('call');
     const [loadingOptions, setLoadingOptions] = useState<boolean>(false);
 
+
+
+    const [positions, setPositions] = useState<Array<JSON>>([]);
+    const [optionPositions, setOptionPositions] = useState<Array<JSON>>([]);
+
+    /**
+     * Initial runs for data
+     */
     useEffect(() => {
+        //gets the stock data
         axios.get("http://localhost:5000/stockData/getStockQuote", {
             params: {
                 'symbol': props.stock
@@ -45,6 +54,36 @@ function Stock(props: any) {
             alert(err.response);
 
         })
+
+        //Gets your positions on this stock
+        axios.get("http://localhost:5000/transaction/getSpecificPosition", {
+            params: {
+                "userId": props.currentUser.user_id,
+                "stockSymbol": props.stock
+            }
+        }).then((response: AxiosResponse) => {
+            console.log(response.data.positions)
+
+            setPositions(response.data.positions)
+        }).catch((error: AxiosError) => {
+            console.log(error.response);
+        })
+
+        //Gets your option positions on this stock
+        axios.get("http://localhost:5000/transaction/getSpecificOptionPosition", {
+            params: {
+                "userId": props.currentUser.user_id,
+                "stockSymbol": props.stock
+            }
+        }).then((response: AxiosResponse) => {
+            console.log(response.data.positions)
+
+            setOptionPositions(response.data.positions)
+        }).catch((error: AxiosError) => {
+            console.log(error.response);
+        })
+
+
     }, [])
 
     useEffect(() => {
@@ -215,6 +254,7 @@ function Stock(props: any) {
                                     <option onClick={() => {
                                         setPulledOptions([]);
                                         setExpirationInView("");
+                                        setOptionInView(undefined);
                                     }}>Select an option</option> : <option>No options For {props.stock}</option>}
 
                                 {(optionExpirations != undefined && optionExpirations.length != 0) &&
@@ -223,6 +263,7 @@ function Stock(props: any) {
                                             <option className={styles.Option}
                                                 onClick={() => {
                                                     getOptions(props.stock, date);
+                                                    setOptionInView(undefined);
                                                     setExpirationInView(date);
                                                 }}>
                                                 {date}</option>
@@ -241,18 +282,22 @@ function Stock(props: any) {
 
             {loadingOptions ? <div className={styles.PulledOptions}>loading</div> : <div className={styles.PulledOptions}>
                 <div className={styles.DescriptionContainer}>
-                    <h2>{expirationInView}</h2>
-                    {expirationInView != undefined && <button onClick={() => {
-                        if (optionType == 'call') {
-                            setOptionType('put');
-                        }
-                        else if (optionType == 'put') {
-                            setOptionType('call');
-                        }
 
-                    }}>
-                        Show {optionType == 'call' ? "put" : "call"}
-                    </button>}
+                    <h2>{expirationInView}</h2>
+                    {(expirationInView != undefined && expirationInView != "") &&
+                        <button className={styles.OptionType}
+                            onClick={() => {
+                                setOptionInView(undefined);
+                                if (optionType == 'call') {
+                                    setOptionType('put');
+                                }
+                                else if (optionType == 'put') {
+                                    setOptionType('call');
+                                }
+
+                            }}>
+                            Show {optionType == 'call' ? "put" : "call"}
+                        </button>}
 
                     {(pulledOptions != undefined || pulledOptions != []) && pulledOptions.map((option: any) => {
                         return (<p onClick={() => setOptionInView(option)} className={styles.Option}>{option.description + " at $" + option.last}</p>)
@@ -283,7 +328,7 @@ function Stock(props: any) {
                                 <div>
                                     <div>Your tendies after purchasing {amtOfContractsToPurchase} {optionInView.description} contracts:
 
-                                        ${(Math.round(1000 * (+(props.currentUser.total_money) - ((+amtOfContractsToPurchase) * (+optionInView.last)))) / 1000)}</div>
+                                        ${(Math.round(1000 * (+(props.currentUser.total_money) - ((+amtOfContractsToPurchase) * (100 * +optionInView.last)))) / 1000)}</div>
                                 </div>
                                 <div>
                                     <p><b>Your password:</b></p>
@@ -332,7 +377,38 @@ function Stock(props: any) {
 
 
             <div className={styles.ContentContainer}>
-                <h2>Your positions</h2>
+                <div className={styles.StockPositions}>
+                    <h2>Your {props.symbol} contracts</h2>
+
+                    {(optionPositions != undefined && optionPositions.length != 0) &&
+                        optionPositions.map((position: JSON | any) => {
+
+                            return (
+                                <div> You have {position.amt_of_contracts + " "}
+                                contracts in {props.stock} remaining which you purchased at ${position.price_at_purchase + " "}
+                                 on {(new Date(position.date_purchased)).toDateString()}
+                                </div>
+                            );
+                        })}
+
+                </div>
+
+
+                <div className={styles.StockPositions}>
+                    <h2>Your {props.symbol} stocks</h2>
+
+                    {(positions != undefined && positions.length != 0) &&
+                        positions.map((position: JSON | any) => {
+
+                            return (
+                                <div> You have {position.amt_of_purchase - position.amt_sold + " "}
+                                shares in {props.stock} remaining which you purchased at ${position.price_at_purchase + " "}
+                                 on {(new Date(position.date_purchased)).toDateString()}
+                                </div>
+                            );
+                        })}
+                </div>
+
             </div>
 
 
