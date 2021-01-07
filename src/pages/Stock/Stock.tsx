@@ -43,7 +43,38 @@ function Stock(props: any) {
      * Initial runs for data
      */
     useEffect(() => {
-        //gets the stock data
+
+        //Get initial stock data
+        getCurrentStockDetails();
+
+        /**
+         * gets the stock data every 10 seconds to update the client side data
+         * 
+         * TODO: 
+         * 
+         * Perhaps implement these websockets
+         * https://documentation.tradier.com/brokerage-api/streaming/wss-market-websocket
+         * https://documentation.tradier.com/brokerage-api/streaming/create-market-session
+         * 
+         * This may give much more flexibility
+         */
+
+        const interval = setInterval(() => {
+            getCurrentStockDetails();
+
+        }, 10000)
+
+
+
+        getStockPositions();
+        getStockOptionPositions();
+
+        return () => clearInterval(interval);
+
+    }, [])
+
+    //Gets stock details
+    const getCurrentStockDetails = () => {
         axios.get("http://localhost:5000/stockData/getStockQuote", {
             params: {
                 'symbol': props.stock
@@ -54,7 +85,9 @@ function Stock(props: any) {
             alert(err.response);
 
         })
+    }
 
+    const getStockPositions = () => {
         //Gets your positions on this stock
         axios.get("http://localhost:5000/transaction/getSpecificPosition", {
             params: {
@@ -62,13 +95,14 @@ function Stock(props: any) {
                 "stockSymbol": props.stock
             }
         }).then((response: AxiosResponse) => {
-            console.log(response.data.positions)
 
             setPositions(response.data.positions)
         }).catch((error: AxiosError) => {
             console.log(error.response);
         })
+    }
 
+    const getStockOptionPositions = () => {
         //Gets your option positions on this stock
         axios.get("http://localhost:5000/transaction/getSpecificOptionPosition", {
             params: {
@@ -76,15 +110,13 @@ function Stock(props: any) {
                 "stockSymbol": props.stock
             }
         }).then((response: AxiosResponse) => {
-            console.log(response.data.positions)
 
             setOptionPositions(response.data.positions)
         }).catch((error: AxiosError) => {
             console.log(error.response);
         })
+    }
 
-
-    }, [])
 
     useEffect(() => {
         expirationInView != undefined &&
@@ -94,6 +126,8 @@ function Stock(props: any) {
 
 
     useEffect(() => {
+
+
         axios.get("http://localhost:5000/stockData/getExpirations", {
             params: {
                 'symbol': props.stock
@@ -117,13 +151,14 @@ function Stock(props: any) {
                 password: userPw,
                 stockSymbol: currentStock.symbol,
                 stockName: currentStock.description,
-                stockPrice: currentStock.last,
+                stockPrice: currentStock.ask,
                 amtOfStocks: amtStocksToPurchase,
                 exchange: currentStock.exch
             }).then((response: AxiosResponse) => {
 
                 setMessage(response.data);
 
+                getStockPositions();
                 props.updateNavbar();
 
             }).catch((err: AxiosError) => {
@@ -142,12 +177,13 @@ function Stock(props: any) {
                 token: cookieToken.getToken(),
                 password: userPw,
                 optionSymbol: optionInView.symbol,
-                optionPrice: (optionInView.last * 100), //100x shares
+                optionPrice: (optionInView.ask * 100), //100x shares
                 amtOfContracts: amtOfContractsToPurchase
             }).then((response: AxiosResponse) => {
 
                 setMessage(response.data);
 
+                getStockOptionPositions();
                 props.updateNavbar();
 
             }).catch((err: AxiosError) => {
@@ -194,9 +230,9 @@ function Stock(props: any) {
                         <div className={styles.StockData}>
                             <h2>{currentStock.description}</h2>
                             <h2>open: ${currentStock.open}</h2>
-                            <h2>close: ${currentStock.close}</h2>
+                            <h2>close: ${currentStock.last}</h2>
                             <h2>volume: {currentStock.volume}</h2>
-                            <h2>Current Cost: ${currentStock.last}</h2>
+                            <h2>Current Cost: ${currentStock.ask}</h2>
 
                             <div>
 
@@ -223,13 +259,13 @@ function Stock(props: any) {
                                     <div>
                                         <div>Your tendies after purchasing {amtStocksToPurchase} {props.stock} stocks:
 
-                                        ${(Math.round(1000 * (+(props.currentUser.total_money) - ((+amtStocksToPurchase) * (+currentStock.last)))) / 1000)}</div>
+                                        ${(Math.round(1000 * (+(props.currentUser.total_money) - ((+amtStocksToPurchase) * (+currentStock.ask)))) / 1000)}</div>
                                     </div>
                                     <div>
                                         <p>Your password:</p>
                                         <input onChange={(e) => setUserPw(e.target.value)}></input>
                                         <button onClick={() => {
-                                            if (+(props.currentUser.total_money) < ((+amtStocksToPurchase) * (+currentStock.last))) setMessage('Not enough funds!')
+                                            if (+(props.currentUser.total_money) < ((+amtStocksToPurchase) * (+currentStock.ask))) setMessage('Not enough funds!')
                                             else {
                                                 purchaseStock();
                                             }
@@ -300,7 +336,7 @@ function Stock(props: any) {
                         </button>}
 
                     {(pulledOptions != undefined || pulledOptions != []) && pulledOptions.map((option: any) => {
-                        return (<p onClick={() => setOptionInView(option)} className={styles.Option}>{option.description + " at $" + option.last}</p>)
+                        return (<p onClick={() => setOptionInView(option)} className={styles.Option}>{option.description + " at $" + option.ask}</p>)
                     })}
 
                 </div>
@@ -324,17 +360,17 @@ function Stock(props: any) {
                             <div className={styles.Modal}>
                                 <div><b>Amt:</b></div>
                                 <div><input type="number" max="1000" min="1" onChange={(e) => setAmtOfContractsToPurchase(+(e.target.value))}></input>
-                                    Total: ${100 * amtOfContractsToPurchase * optionInView.last}</div>
+                                    Total: ${100 * amtOfContractsToPurchase * optionInView.ask}</div>
                                 <div>
                                     <div>Your tendies after purchasing {amtOfContractsToPurchase} {optionInView.description} contracts:
 
-                                        ${(Math.round(1000 * (+(props.currentUser.total_money) - ((+amtOfContractsToPurchase) * (100 * +optionInView.last)))) / 1000)}</div>
+                                        ${(Math.round(1000 * (+(props.currentUser.total_money) - ((+amtOfContractsToPurchase) * (100 * +optionInView.ask)))) / 1000)}</div>
                                 </div>
                                 <div>
                                     <p><b>Your password:</b></p>
                                     <input onChange={(e) => setUserPw(e.target.value)}></input>
                                     <button onClick={() => {
-                                        if (+(props.currentUser.total_money) < ((+amtOfContractsToPurchase) * (+optionInView.last))) setMessage('Not enough funds!')
+                                        if (+(props.currentUser.total_money) < ((+amtOfContractsToPurchase) * (+optionInView.ask))) setMessage('Not enough funds!')
                                         else {
                                             purchaseOption();
                                         }
@@ -378,15 +414,18 @@ function Stock(props: any) {
 
             <div className={styles.ContentContainer}>
                 <div className={styles.StockPositions}>
-                    <h2>Your {props.symbol} contracts</h2>
+                    <h2>Your {props.stock} contracts</h2>
 
                     {(optionPositions != undefined && optionPositions.length != 0) &&
                         optionPositions.map((position: JSON | any) => {
 
                             return (
-                                <div> You have {position.amt_of_contracts + " "}
-                                contracts in {props.stock} remaining which you purchased at ${position.price_at_purchase + " "}
-                                 on {(new Date(position.date_purchased)).toDateString()}
+                                <div>
+                                    <h3>{position.description}</h3>
+                                    <div>You have {(position.amt_of_contracts - position.amt_sold) + " "}
+                                    contract(s) remaining which you purchased for ${position.price_at_purchase + " each "}
+                                    </div>
+                                    <div>Currently worth ${position.ask * 100} expiring on {position.expiration_date}</div>
                                 </div>
                             );
                         })}
@@ -395,7 +434,7 @@ function Stock(props: any) {
 
 
                 <div className={styles.StockPositions}>
-                    <h2>Your {props.symbol} stocks</h2>
+                    <h2>Your {props.stock} stocks</h2>
 
                     {(positions != undefined && positions.length != 0) &&
                         positions.map((position: JSON | any) => {

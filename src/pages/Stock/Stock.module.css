@@ -3,6 +3,9 @@
     width:30vw;
     height: 100%;
     background-color: rgba(30, 155, 68, 0.479);
+
+    overflow-y: auto;
+
 }
 
 .Stock {
@@ -106,13 +109,20 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+    overflow-y: auto;
+
 }
 .StockPositions {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     
+    height:40vh;
+
     row-gap: 2vh;
     width: 80%;
+    overflow-y: auto;
+
+
 }
 
