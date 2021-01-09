@@ -1,6 +1,7 @@
 import Modal from "@material-ui/core/Modal";
 import { AxiosError, AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
+import Sell from "../../components/sellbutton/Sell";
 
 
 
@@ -445,6 +446,13 @@ function Stock(props: any) {
                                 <div> You have {position.amt_of_purchase - position.amt_sold + " "}
                                 shares in {props.stock} remaining which you purchased at ${position.price_at_purchase + " "}
                                  on {(new Date(position.date_purchased)).toDateString()}
+
+                                    <Sell
+                                        userId={props.currentUser.user_id}
+                                        purchaseId={position.purchase_id}
+                                        stockTicker={props.stock}
+                                        amtOwned={position.amt_of_purchase - position.amt_sold}
+                                    />
                                 </div>
                             );
                         })}
