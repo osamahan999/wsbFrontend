@@ -35,8 +35,9 @@ function Stock(props: any) {
     const [expirationInView, setExpirationInView] = useState<string>();
 
     const [optionType, setOptionType] = useState<string>('call');
-    const [loadingOptions, setLoadingOptions] = useState<boolean>(false);
 
+    const [loadingOptions, setLoadingOptions] = useState<boolean>(false);
+    const [loadingPurchases, setLoadingPurchases] = useState<boolean>(false);
 
 
     const [positions, setPositions] = useState<Array<JSON>>([]);
@@ -163,11 +164,18 @@ function Stock(props: any) {
 
                 getStockPositions();
                 props.updateNavbar();
+                setLoadingPurchases(false);
+
 
             }).catch((err: AxiosError) => {
                 setMessage("Error purchasing");
+                setLoadingPurchases(false);
+
             })
-        } else { setMessage("Must be amt > 0") }
+        } else {
+            setMessage("Must be amt > 0");
+            setLoadingPurchases(false);
+        }
     }
 
 
@@ -188,11 +196,17 @@ function Stock(props: any) {
 
                 getStockOptionPositions();
                 props.updateNavbar();
+                setLoadingPurchases(false);
 
             }).catch((err: AxiosError) => {
                 setMessage("Error purchasing");
+                setLoadingPurchases(false);
+
             })
-        } else { setMessage("Must be amt > 0") }
+        } else {
+            setMessage("Must be amt > 0");
+            setLoadingPurchases(false);
+        }
     }
 
 
@@ -256,30 +270,36 @@ function Stock(props: any) {
 
                                 }}
                             >
-                                <div className={styles.Modal}>
-                                    <div>Amt:</div>
-                                    <input type="number" max="1000" min="1" onChange={(e) => setAmtStocksToPurchase(+(e.target.value))}></input>
-                                    <div>
-                                        <div>Your tendies after purchasing {amtStocksToPurchase} {props.stock} stocks:
+                                {
+                                    loadingPurchases ?
+                                        <div>Purchasing</div>
+                                        :
+
+                                        <div className={styles.Modal}>
+                                            <div>Amt:</div>
+                                            <input type="number" max="1000" min="1" onChange={(e) => setAmtStocksToPurchase(+(e.target.value))}></input>
+                                            <div>
+                                                <div>Your tendies after purchasing {amtStocksToPurchase} {props.stock} stocks:
 
                                         ${(Math.round(1000 * (+(props.currentUser.total_money) - ((+amtStocksToPurchase) * (+currentStock.ask)))) / 1000)}</div>
-                                    </div>
-                                    <div>
-                                        <p>Your password:</p>
-                                        <input onChange={(e) => setUserPw(e.target.value)}></input>
-                                        <button onClick={() => {
-                                            if (+(props.currentUser.total_money) < ((+amtStocksToPurchase) * (+currentStock.ask))) setMessage('Not enough funds!')
-                                            else {
-                                                purchaseStock();
-                                            }
-                                        }}>Purchase {amtStocksToPurchase + " of " + props.stock}</button>
-                                    </div>
+                                            </div>
+                                            <div>
+                                                <p>Your password:</p>
+                                                <input onChange={(e) => setUserPw(e.target.value)}></input>
+                                                <button onClick={() => {
+                                                    if (+(props.currentUser.total_money) < ((+amtStocksToPurchase) * (+currentStock.ask))) setMessage('Not enough funds!')
+                                                    else {
+                                                        setLoadingPurchases(true);
+                                                        purchaseStock();
+                                                    }
+                                                }}>Purchase {amtStocksToPurchase + " of " + props.stock}</button>
+                                            </div>
 
 
-                                    <h2 className={styles.Error}>{message}</h2>
+                                            <h2 className={styles.Error}>{message}</h2>
 
-                                </div>
-
+                                        </div>
+                                }
                             </Modal>
                             <br></br>
                         </div>
@@ -360,31 +380,35 @@ function Stock(props: any) {
 
                             }}
                         >
-                            <div className={styles.Modal}>
-                                <div><b>Amt:</b></div>
-                                <div><input type="number" max="1000" min="1" onChange={(e) => setAmtOfContractsToPurchase(+(e.target.value))}></input>
+                            {
+                                loadingPurchases ? <div>Purchasing</div>
+                                    :
+                                    <div className={styles.Modal}>
+                                        <div><b>Amt:</b></div>
+                                        <div><input type="number" max="1000" min="1" onChange={(e) => setAmtOfContractsToPurchase(+(e.target.value))}></input>
                                     Total: ${100 * amtOfContractsToPurchase * optionInView.ask}</div>
-                                <div>
-                                    <div>Your tendies after purchasing {amtOfContractsToPurchase} {optionInView.description} contracts:
+                                        <div>
+                                            <div>Your tendies after purchasing {amtOfContractsToPurchase} {optionInView.description} contracts:
 
                                         ${(Math.round(1000 * (+(props.currentUser.total_money) - ((+amtOfContractsToPurchase) * (100 * +optionInView.ask)))) / 1000)}</div>
-                                </div>
-                                <div>
-                                    <p><b>Your password:</b></p>
-                                    <input onChange={(e) => setUserPw(e.target.value)}></input>
-                                    <button onClick={() => {
-                                        if (+(props.currentUser.total_money) < ((+amtOfContractsToPurchase) * (+optionInView.ask))) setMessage('Not enough funds!')
-                                        else {
-                                            purchaseOption();
-                                        }
-                                    }}>Purchase {amtOfContractsToPurchase + " of this contract"}</button>
-                                </div>
+                                        </div>
+                                        <div>
+                                            <p><b>Your password:</b></p>
+                                            <input onChange={(e) => setUserPw(e.target.value)}></input>
+                                            <button onClick={() => {
+                                                if (+(props.currentUser.total_money) < ((+amtOfContractsToPurchase) * (+optionInView.ask))) setMessage('Not enough funds!')
+                                                else {
+                                                    setLoadingPurchases(true);
+                                                    purchaseOption();
+                                                }
+                                            }}>Purchase {amtOfContractsToPurchase + " of this contract"}</button>
+                                        </div>
 
 
-                                <h2 className={styles.Error}>{message}</h2>
+                                        <h2 className={styles.Error}>{message}</h2>
 
-                            </div>
-
+                                    </div>
+                            }
                         </Modal>
 
 
@@ -422,6 +446,7 @@ function Stock(props: any) {
                     {(optionPositions != undefined && optionPositions.length != 0) &&
                         optionPositions.map((position: JSON | any) => {
 
+
                             return (
                                 <div>
                                     <h3>{position.description}</h3>
@@ -429,7 +454,18 @@ function Stock(props: any) {
                                         {(position.amt_of_contracts - position.amt_sold) == 1 ? "contract " : "contracts "}
                                         remaining which you purchased for ${position.price_at_purchase + " each "}
                                     </div>
-                                    <div>Currently worth ${position.ask} expiring on {position.expiration_date}</div>
+                                    <div>Currently worth ${position.ask * 100}  expiring on {position.expiration_date}</div>
+
+                                    <Sell
+                                        userId={props.currentUser.user_id}
+                                        purchaseId={position.option_purchase_id}
+                                        ticker={position.symbol}
+
+                                        amtOwned={position.amt_of_contracts - position.amt_sold}
+                                        isOption={true}
+                                        updateNavbar={() => props.updateNavbar()}
+                                        updateStockPositions={() => getStockOptionPositions()}
+                                    />
                                 </div>
                             );
                         })}
@@ -445,7 +481,8 @@ function Stock(props: any) {
 
                             return (
                                 <div> You have {position.amt_of_purchase - position.amt_sold + " "}
-                                    {(position.amt_of_purchase - position.amt_sold) == 1 ? "share " : "shares"} in {props.stock} which you purchased at ${position.price_at_purchase + " "}
+                                    {(position.amt_of_purchase - position.amt_sold) == 1 ? "share " : "shares"} in
+                                    {" " + props.stock} which you purchased at ${position.price_at_purchase + " "}
                                  on {(new Date(position.date_purchased)).toDateString()}
 
                                     <Sell

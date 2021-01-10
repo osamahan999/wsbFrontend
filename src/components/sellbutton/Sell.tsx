@@ -18,6 +18,26 @@ function Sell(props: any) {
 
     const sellOption = () => {
 
+        setIsLoading(true);
+        if (amtToSell <= props.amtOwned) {
+            axios.post("http://localhost:5000/transaction/sellContract", {
+                userId: props.userId,
+                optionPurchaseId: props.purchaseId,
+                amtToSell: amtToSell,
+                optionSymbol: props.ticker
+
+            }).then((response: AxiosResponse) => {
+                console.log(response);
+
+                props.updateNavbar();
+                props.updateStockPositions();
+                setIsLoading(false);
+            }).catch((err: AxiosError) => {
+                console.log(err.response);
+                setIsLoading(false);
+
+            })
+        } else alert("No, you dont own that many");
     }
 
 
@@ -59,7 +79,7 @@ function Sell(props: any) {
                         disabled={(amtToSell > props.amtOwned)}
 
 
-                    >Sell {amtToSell + " of " + props.ticker + "?"}
+                    >Sell {amtToSell}
 
                     </Button>
                 </div>
