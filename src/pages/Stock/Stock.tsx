@@ -426,9 +426,10 @@ function Stock(props: any) {
                                 <div>
                                     <h3>{position.description}</h3>
                                     <div>You have {(position.amt_of_contracts - position.amt_sold) + " "}
-                                    contract(s) remaining which you purchased for ${position.price_at_purchase + " each "}
+                                        {(position.amt_of_contracts - position.amt_sold) == 1 ? "contract " : "contracts "}
+                                        remaining which you purchased for ${position.price_at_purchase + " each "}
                                     </div>
-                                    <div>Currently worth ${position.ask * 100} expiring on {position.expiration_date}</div>
+                                    <div>Currently worth ${position.ask} expiring on {position.expiration_date}</div>
                                 </div>
                             );
                         })}
@@ -444,14 +445,18 @@ function Stock(props: any) {
 
                             return (
                                 <div> You have {position.amt_of_purchase - position.amt_sold + " "}
-                                shares in {props.stock} remaining which you purchased at ${position.price_at_purchase + " "}
+                                    {(position.amt_of_purchase - position.amt_sold) == 1 ? "share " : "shares"} in {props.stock} which you purchased at ${position.price_at_purchase + " "}
                                  on {(new Date(position.date_purchased)).toDateString()}
 
                                     <Sell
                                         userId={props.currentUser.user_id}
                                         purchaseId={position.purchase_id}
-                                        stockTicker={props.stock}
+                                        ticker={props.stock}
+
                                         amtOwned={position.amt_of_purchase - position.amt_sold}
+                                        isOption={false}
+                                        updateNavbar={() => props.updateNavbar()}
+                                        updateStockPositions={() => getStockPositions()}
                                     />
                                 </div>
                             );
