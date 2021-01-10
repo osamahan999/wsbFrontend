@@ -10,6 +10,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import styles from './UserFeed.module.css';
 import { TextField } from '@material-ui/core';
+import Sell from '../../components/sellbutton/Sell';
 
 const axios = require('axios');
 
@@ -23,6 +24,9 @@ function UserFeed(props: any) {
     const [searchInput, setSearchInput] = useState('');
     const [stocksInDropdown, setStocksInDropdown] = useState<any[]>([]);
 
+    const [ownedStocks, setOwnedStocks] = useState<Array<JSON>>([]);
+    const [ownedContracts, setOwnedContracts] = useState<Array<JSON>>([]);
+
     useEffect(() => {
         setUsername(props.user.username);
         setTotalMoney(props.user.total_money);
@@ -30,6 +34,42 @@ function UserFeed(props: any) {
 
     }, [])
 
+    useEffect(() => {
+        getUserStocks();
+        getUserContracts();
+
+    }, [userId]);
+
+
+    const getUserStocks = () => {
+        if (userId != -1) {
+            axios.get("http://localhost:5000/transaction/getSpecificPosition", {
+                params: {
+                    'userId': userId
+                }
+            }).then((response: AxiosResponse) => {
+                setOwnedStocks(response.data.positions);
+                console.log(response.data.positions);
+            }).catch((err: AxiosError) => {
+                console.log(err);
+            })
+        }
+    }
+
+    const getUserContracts = () => {
+        if (userId != -1) {
+            axios.get("http://localhost:5000/transaction/getSpecificOptionPosition", {
+                params: {
+                    'userId': userId
+                }
+            }).then((response: AxiosResponse) => {
+                setOwnedContracts(response.data.positions);
+                console.log(response.data.positions);
+            }).catch((err: AxiosError) => {
+                console.log(err.response);
+            })
+        }
+    }
 
     useEffect(() => {
 
@@ -102,7 +142,45 @@ function UserFeed(props: any) {
                 </div>
 
 
-                <div>hi</div>
+                <div>
+                    <h3>Owned shares:</h3>
+                    {ownedStocks.map((stock: JSON | any) => {
+                        return (
+                            <div>
+                                You have {stock.amt_of_purchase + " share of " + stock.stock_symbol + " stock, purchased at $" + stock.price_at_purchase}
+                                <Sell
+                                    userId={userId}
+                                    purchaseId={stock.purchase_id}
+                                    ticker={stock.stock_symbol}
+
+                                    amtOwned={stock.amt_of_purchase}
+                                    isOption={false}
+                                    updateStockPositions={() => getUserStocks()}
+                                    updateNavbar={() => props.updateNavbar()}
+                                />
+                            </div>);
+                    })}
+
+                    <h3>Owned contracts</h3>
+                    {ownedContracts != null && ownedContracts.map((contract: JSON | any) => {
+                        if (contract != null) return (
+                            <div>
+                                <h4>{contract.description}</h4>
+                                {contract.amt_of_contracts + " contracts worth $" + contract.ask + " purchased for $" + contract.price_at_purchase / 100}
+                                <Sell
+                                    userId={userId}
+                                    purchaseId={contract.option_purchase_id}
+                                    ticker={contract.option_symbol}
+
+                                    amtOwned={contract.amt_of_contracts}
+                                    isOption={true}
+                                    updateStockPositions={() => getUserContracts()}
+                                    updateNavbar={() => props.updateNavbar()}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
             <SidefillerRight />
 

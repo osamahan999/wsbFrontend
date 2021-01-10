@@ -142,6 +142,7 @@ function App() {
             user={currentUser}
             setCurrentStock={(e: string) => setCurrentStockInFocus(e)}
             setCurrentPage={(e: string) => setCurrentPage(e)}
+            updateNavbar={() => updateNavbar(cookieToken.getToken())}
           />}
         {currentPage == "stock" &&
           <Stock stock={currentStockInFocus}
