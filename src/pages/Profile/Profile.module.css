@@ -9,6 +9,7 @@
 
     display: flex;
     flex-direction: column;
+
 }
 
 .StockHistory {
@@ -18,4 +19,8 @@
     row-gap: 5vh;
 
     overflow-y: auto;
+}
+
+.Button {
+    width: 10vw;
 }

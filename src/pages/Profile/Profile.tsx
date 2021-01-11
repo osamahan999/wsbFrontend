@@ -16,7 +16,10 @@ const axios = require('axios');
 function Profile(props: any) {
 
     const [renderedStockHistory, setRenderedStockHistory] = useState<Array<JSON | any>>([]);
+
     const [stocksOrContracts, setStocksOrContracts] = useState<String>("stocks");
+    const [salesOrPurchases, setSalesOrPurchases] = useState<String>("sales");
+    const [filterBySymbol, setFilterBySymbol] = useState<String>();
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -24,7 +27,7 @@ function Profile(props: any) {
 
     useEffect(() => {
         getHistory();
-    }, [stocksOrContracts])
+    }, [stocksOrContracts, salesOrPurchases])
 
 
     const getHistory = () => {
@@ -34,14 +37,38 @@ function Profile(props: any) {
         else getUserContracts();
     }
 
-    const getUserStocks = () => {
+    /**
+     * Calls getUserStocks but with a filter which is optional
+     */
+    const getFilteredHistory = () => {
+        if (stocksOrContracts == "stocks") {
+            if (filterBySymbol != undefined && filterBySymbol.length == 0) {
+                getUserStocks();
+            } else {
+                getUserStocks(filterBySymbol)
+
+            }
+        }
+        else {
+            if (filterBySymbol != undefined && filterBySymbol.length) {
+                getUserContracts(filterBySymbol)
+            }
+            else {
+                getUserContracts()
+            }
+        }
+    }
+
+    const getUserStocks = (filter?: string | any) => {
         if (props.currentUser != null) {
 
             setLoading(true);
 
             axios.get("http://localhost:5000/transaction/getUserStockHistory", {
                 params: {
-                    "userId": props.currentUser.user_id
+                    "userId": props.currentUser.user_id,
+                    "salesOrPurchases": salesOrPurchases,
+                    "filter": filterBySymbol
                 }
             }).then((response: AxiosResponse) => {
                 console.log(response.data)
@@ -58,14 +85,16 @@ function Profile(props: any) {
         } else console.log("User not set");
     }
 
-    const getUserContracts = () => {
+    const getUserContracts = (filter?: string | any) => {
         if (props.currentUser != null) {
             setLoading(true);
 
 
             axios.get("http://localhost:5000/transaction/getUserContractHistory", {
                 params: {
-                    "userId": props.currentUser.user_id
+                    "userId": props.currentUser.user_id,
+                    "salesOrPurchases": salesOrPurchases,
+                    "filter": filterBySymbol
                 }
             }).then((response: AxiosResponse) => {
                 console.log(response.data)
@@ -83,40 +112,112 @@ function Profile(props: any) {
     }
 
 
-
-    //TODO: Add symbol filter
-    //TODO: Add date filter 
-    //TODO: Add 'Get sales' button
-
     return (
 
         <div className={styles.Profile}>
             <SidefillerLeft />
             <div className={styles.UserContent}>
-                <button onClick={() => {
+                <div>
+                    <button className={styles.Button} onClick={() => {
 
-                    stocksOrContracts == "stocks" ? setStocksOrContracts("options") : setStocksOrContracts("stocks");
-                }}>Show {stocksOrContracts == "stocks" ? "options" : "stocks"}</button>
+                        stocksOrContracts == "stocks" ? setStocksOrContracts("options") : setStocksOrContracts("stocks");
+                    }}>Show {stocksOrContracts == "stocks" ? "options" : "stocks"}</button>
+                    <button className={styles.Button} onClick={() => {
+                        salesOrPurchases == "sales" ? setSalesOrPurchases("purchases") : setSalesOrPurchases("sales");
+
+                    }}>Show {salesOrPurchases == "sales" ? "purchases" : "sales"}</button>
+                    <div>
+                        <input onChange={(e) => setFilterBySymbol(e.target.value)} placeholder={"Filter by symbol?"}></input>
+                        <button className={styles.Button} onClick={() => getFilteredHistory()}>Filter</button>
+                    </div>
+                </div>
 
 
 
                 {!loading ?
 
                     <div className={styles.StockHistory}>
-                        <h3>Your {stocksOrContracts} purchase history</h3>
-                        {renderedStockHistory.length != 0 && renderedStockHistory.map((position) => {
-                            return (
-                                <div>
-                                    <h4> {stocksOrContracts == "stocks" ? position.stock_symbol : position.option_symbol} </h4>
-                                    <div>Purchased {position.amt_of_purchase} on {(new Date(position.date_purchased)).toDateString()}</div>
-                                    <div>Cost at purchase: ${position.price_at_purchase} each</div>
-                                    <div>Amount of shares still owned from this purchase:
-                                        {stocksOrContracts == "stocks" ? position.amt_of_purchase - position.amt_sold
-                                            : position.amt_of_contracts - position.amt_sold}</div>
 
-                                </div>
-                            )
-                        })}
+                        {stocksOrContracts == "stocks" ?
+                            <div>
+                                <h3>Your stock {salesOrPurchases} history</h3>
+                                {renderedStockHistory.length != 0 && renderedStockHistory.map((position) => {
+                                    return (
+
+                                        salesOrPurchases == "sales" ?
+                                            <div>
+                                                <h3>{position.stock_symbol}</h3>
+                                                <div> Sold {position.amt_sold} shares on
+                                         {" " + (new Date(position.date_sold)).toDateString()} for ${position.price_at_sale} each</div>
+                                                <div>Initially purchased for ${position.price_at_purchase}</div>
+
+                                                <div> You {(position.price_at_sale - position.price_at_purchase) >= 0 ? "profited" : "lost"}
+                                                    {" $" + +(Math.round(((position.price_at_sale * position.amt_sold) - (position.price_at_purchase * position.amt_sold)) * 100) / 100)}</div>
+
+                                            </div>
+                                            :
+                                            <div>
+                                                <h3>{position.stock_symbol}</h3>
+                                                <div>Purchased {position.amt_of_purchase} shares on {(new Date(position.date_purchased)).toDateString()}</div>
+                                                <div> Each share cost ${position.price_at_purchase + " "}
+                                        for a total of ${Math.round(position.price_at_purchase * position.amt_of_purchase * 100) / 100}</div>
+                                                <div>{(position.amt_of_purchase - position.amt_sold) != 0
+                                                    ? "You still have " + (position.amt_of_purchase - position.amt_sold) + " shares from this purchase"
+                                                    : "You have no remaining shares from this purchase"}
+                                                </div>
+                                            </div>
+
+
+                                    )
+                                })}
+                            </div>
+
+                            :
+                            <div>
+                                <h3>Your contract {salesOrPurchases} history</h3>
+                                {renderedStockHistory.length != 0 &&
+                                    renderedStockHistory.map((position) => {
+                                        return (
+                                            salesOrPurchases == "sales" ?
+                                                <div>
+                                                    <h3>{position.option_symbol}</h3>
+                                                    <div> Sold {position.amt_sold} contracts on
+                                                        {" " + (new Date(position.date_sold)).toDateString()} for ${position.price_at_sale} each</div>
+                                                    <div>Initially purchased for ${position.price_at_purchase}</div>
+
+                                                    <div> You {(position.price_at_sale - position.price_at_purchase) >= 0 ? "profited" : "lost"}
+                                                        {" $" + +(Math.round(((position.price_at_sale * position.amt_sold)
+                                                            - (position.price_at_purchase * position.amt_sold)) * 100) / 100)}</div>
+
+                                                </div>
+                                                :
+                                                <div>
+                                                    <h3>{position.option_symbol}</h3>
+                                                    <div>Purchased {position.amt_of_contracts} contracts on
+                                                        {" " + (new Date(position.date_purchased)).toDateString()}</div>
+                                                    <div> Each contract cost ${position.price_at_purchase + " "}
+                                                        for a total of
+                                                        {" $" + Math.round(position.price_at_purchase * position.amt_of_contracts * 100) / 100}</div>
+                                                    <div>
+                                                        {(position.amt_of_contracts - position.amt_sold) != 0
+                                                            ? "You still have " + (position.amt_of_contracts - position.amt_sold) + " contracts from this purchase"
+                                                            : "You have no remaining contracts from this purchase"}
+                                                    </div>
+                                                </div>
+                                        );
+                                    })
+
+                                }
+
+
+                            </div>
+                        }
+
+
+
+
+
+
                     </div>
                     :
 
