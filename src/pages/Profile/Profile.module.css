@@ -1,0 +1,21 @@
+.Profile {
+    display:flex;
+    flex-direction: row;
+}
+
+.UserContent {
+    width: 40vw;
+    height: 94vh;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.StockHistory {
+    display: flex;
+    flex-direction: column;
+
+    row-gap: 5vh;
+
+    overflow-y: auto;
+}

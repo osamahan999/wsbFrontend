@@ -144,8 +144,12 @@ function UserFeed(props: any) {
                     <h3>Owned shares:</h3>
                     {ownedStocks.map((stock: JSON | any) => {
                         return (
-                            <div>
+                            <div className={styles.PositionData}>
                                 You have {(stock.amt_of_purchase - stock.amt_sold) + " share of " + stock.stock_symbol + " stock, purchased at $" + stock.price_at_purchase}
+                                <button className={styles.GoToButton} onClick={() => {
+                                    props.setCurrentStock(stock.stock_symbol);
+                                    props.setCurrentPage('stock');
+                                }}>Go to {stock.stock_symbol} </button>
                                 <Sell
                                     userId={userId}
                                     purchaseId={stock.purchase_id}
@@ -162,8 +166,12 @@ function UserFeed(props: any) {
                     <h3>Owned contracts</h3>
                     {ownedContracts != null && ownedContracts.map((contract: JSON | any) => {
                         if (contract != null) return (
-                            <div>
+                            <div className={styles.PositionData}>
                                 <h4>{contract.description}</h4>
+                                <button className={styles.GoToButton} onClick={() => {
+                                    props.setCurrentStock(contract.underlying);
+                                    props.setCurrentPage('stock');
+                                }}>Go to {contract.underlying} </button>
                                 {(contract.amt_of_contracts - contract.amt_sold)
                                     + " contracts worth $" + contract.ask + " purchased for $" + contract.price_at_purchase / 100}
                                 <Sell

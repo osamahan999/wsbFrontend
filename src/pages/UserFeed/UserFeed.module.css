@@ -39,3 +39,18 @@
         margin-right: 2%;
 }
 
+.PositionData {
+        display: flex;
+        flex-direction:column;
+        align-items: center;
+
+}
+
+.GoToButton{
+        width: 10%;
+        cursor: pointer;
+        border-radius:5% 5% 5% 5%;
+
+        border: 1px solid black;
+        background-color: blanchedalmond;
+}

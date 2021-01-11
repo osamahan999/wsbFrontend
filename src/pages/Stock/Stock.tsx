@@ -446,28 +446,30 @@ function Stock(props: any) {
                     {(optionPositions != undefined && optionPositions.length != 0) &&
                         optionPositions.map((position: JSON | any) => {
 
+                            if (position != null) {
+                                return (
+                                    <div>
+                                        <h3>{position.description}</h3>
+                                        <div>You have {(position.amt_of_contracts - position.amt_sold) + " "}
+                                            {(position.amt_of_contracts - position.amt_sold) == 1 ? "contract " : "contracts "}
+                                            remaining which you purchased for ${position.price_at_purchase + " each "}
+                                        </div>
+                                        <div>Currently worth ${position.ask * 100}  expiring on {position.expiration_date}</div>
 
-                            return (
-                                <div>
-                                    <h3>{position.description}</h3>
-                                    <div>You have {(position.amt_of_contracts - position.amt_sold) + " "}
-                                        {(position.amt_of_contracts - position.amt_sold) == 1 ? "contract " : "contracts "}
-                                        remaining which you purchased for ${position.price_at_purchase + " each "}
+                                        <Sell
+                                            userId={props.currentUser.user_id}
+                                            purchaseId={position.option_purchase_id}
+                                            ticker={position.symbol}
+
+                                            amtOwned={position.amt_of_contracts - position.amt_sold}
+                                            isOption={true}
+                                            updateNavbar={() => props.updateNavbar()}
+                                            updateStockPositions={() => getStockOptionPositions()}
+                                        />
                                     </div>
-                                    <div>Currently worth ${position.ask * 100}  expiring on {position.expiration_date}</div>
+                                );
+                            }
 
-                                    <Sell
-                                        userId={props.currentUser.user_id}
-                                        purchaseId={position.option_purchase_id}
-                                        ticker={position.symbol}
-
-                                        amtOwned={position.amt_of_contracts - position.amt_sold}
-                                        isOption={true}
-                                        updateNavbar={() => props.updateNavbar()}
-                                        updateStockPositions={() => getStockOptionPositions()}
-                                    />
-                                </div>
-                            );
                         })}
 
                 </div>
@@ -478,25 +480,27 @@ function Stock(props: any) {
 
                     {(positions != undefined && positions.length != 0) &&
                         positions.map((position: JSON | any) => {
+                            if (position != null) {
+                                return (
+                                    <div> You have {position.amt_of_purchase - position.amt_sold + " "}
+                                        {(position.amt_of_purchase - position.amt_sold) == 1 ? "share " : "shares"} in
+                                        {" " + props.stock} which you purchased at ${position.price_at_purchase + " "}
+                                     on {(new Date(position.date_purchased)).toDateString()}
 
-                            return (
-                                <div> You have {position.amt_of_purchase - position.amt_sold + " "}
-                                    {(position.amt_of_purchase - position.amt_sold) == 1 ? "share " : "shares"} in
-                                    {" " + props.stock} which you purchased at ${position.price_at_purchase + " "}
-                                 on {(new Date(position.date_purchased)).toDateString()}
+                                        <Sell
+                                            userId={props.currentUser.user_id}
+                                            purchaseId={position.purchase_id}
+                                            ticker={props.stock}
 
-                                    <Sell
-                                        userId={props.currentUser.user_id}
-                                        purchaseId={position.purchase_id}
-                                        ticker={props.stock}
+                                            amtOwned={position.amt_of_purchase - position.amt_sold}
+                                            isOption={false}
+                                            updateNavbar={() => props.updateNavbar()}
+                                            updateStockPositions={() => getStockPositions()}
+                                        />
+                                    </div>
+                                );
+                            }
 
-                                        amtOwned={position.amt_of_purchase - position.amt_sold}
-                                        isOption={false}
-                                        updateNavbar={() => props.updateNavbar()}
-                                        updateStockPositions={() => getStockPositions()}
-                                    />
-                                </div>
-                            );
                         })}
                 </div>
 

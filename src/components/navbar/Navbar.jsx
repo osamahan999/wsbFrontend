@@ -45,7 +45,11 @@ function Navbar(props) {
         :
         <div className={styles.LoginRegisterContainer}>
 
-          <div className={styles.Option}>Profile</div>
+          <div className={styles.Option} onClick={() =>
+            props.setCurrentPage('profile')}
+          > Profile</div>
+
+
           <div className={styles.Option} onClick={() => {
             props.logOut();
             props.setCurrentPage('home');

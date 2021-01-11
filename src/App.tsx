@@ -8,6 +8,7 @@ import Register from './pages/Register/Register';
 import { AxiosError, AxiosResponse } from 'axios';
 import UserFeed from './pages/UserFeed/UserFeed';
 import Stock from './pages/Stock/Stock';
+import Profile from './pages/Profile/Profile';
 
 const cookieToken = require('./helper');
 
@@ -144,12 +145,17 @@ function App() {
             setCurrentPage={(e: string) => setCurrentPage(e)}
             updateNavbar={() => updateNavbar(cookieToken.getToken())}
           />}
+
         {currentPage == "stock" &&
           <Stock stock={currentStockInFocus}
             updateNavbar={() => updateNavbar(cookieToken.getToken())}
             currentUser={currentUser}
-          />
-        }
+          />}
+
+        {currentPage == "profile" &&
+          <Profile
+            currentUser={currentUser}
+          />}
 
       </div>
 
