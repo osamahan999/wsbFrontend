@@ -49,7 +49,6 @@ function UserFeed(props: any) {
                 }
             }).then((response: AxiosResponse) => {
                 setOwnedStocks(response.data.positions);
-                console.log(response.data.positions);
             }).catch((err: AxiosError) => {
                 console.log(err);
             })
@@ -64,7 +63,6 @@ function UserFeed(props: any) {
                 }
             }).then((response: AxiosResponse) => {
                 setOwnedContracts(response.data.positions);
-                console.log(response.data.positions);
             }).catch((err: AxiosError) => {
                 console.log(err.response);
             })
@@ -147,13 +145,13 @@ function UserFeed(props: any) {
                     {ownedStocks.map((stock: JSON | any) => {
                         return (
                             <div>
-                                You have {stock.amt_of_purchase + " share of " + stock.stock_symbol + " stock, purchased at $" + stock.price_at_purchase}
+                                You have {(stock.amt_of_purchase - stock.amt_sold) + " share of " + stock.stock_symbol + " stock, purchased at $" + stock.price_at_purchase}
                                 <Sell
                                     userId={userId}
                                     purchaseId={stock.purchase_id}
                                     ticker={stock.stock_symbol}
 
-                                    amtOwned={stock.amt_of_purchase}
+                                    amtOwned={stock.amt_of_purchase - stock.amt_sold}
                                     isOption={false}
                                     updateStockPositions={() => getUserStocks()}
                                     updateNavbar={() => props.updateNavbar()}
@@ -166,13 +164,14 @@ function UserFeed(props: any) {
                         if (contract != null) return (
                             <div>
                                 <h4>{contract.description}</h4>
-                                {contract.amt_of_contracts + " contracts worth $" + contract.ask + " purchased for $" + contract.price_at_purchase / 100}
+                                {(contract.amt_of_contracts - contract.amt_sold)
+                                    + " contracts worth $" + contract.ask + " purchased for $" + contract.price_at_purchase / 100}
                                 <Sell
                                     userId={userId}
                                     purchaseId={contract.option_purchase_id}
                                     ticker={contract.option_symbol}
 
-                                    amtOwned={contract.amt_of_contracts}
+                                    amtOwned={(contract.amt_of_contracts - contract.amt_sold)}
                                     isOption={true}
                                     updateStockPositions={() => getUserContracts()}
                                     updateNavbar={() => props.updateNavbar()}

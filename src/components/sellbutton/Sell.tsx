@@ -57,7 +57,6 @@ function Sell(props: any) {
                 props.updateStockPositions();
                 setIsLoading(false);
             }).catch((err: AxiosError) => {
-                console.log(err.response);
                 setIsLoading(false);
 
             })
