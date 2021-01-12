@@ -69,6 +69,20 @@ function UserFeed(props: any) {
         }
     }
 
+    const setExpired = (underlying: string) => {
+        if (userId != -1) {
+            axios.post("http://localhost:5000/transaction/setOptionToExpired", {
+                "userId": userId,
+                "optionSymbol": underlying
+            }).then((response: AxiosResponse) => {
+                getUserContracts();
+                console.log(response.data);
+            }).catch((err: AxiosError) => {
+                console.log(err.response);
+            })
+        }
+    }
+
     useEffect(() => {
 
         if (searchInput.length > 0) {
@@ -168,13 +182,14 @@ function UserFeed(props: any) {
                         if (contract != null) return (
                             <div className={styles.PositionData}>
                                 <h4>{contract.description}</h4>
-                                <button className={styles.GoToButton} onClick={() => {
-                                    props.setCurrentStock(contract.underlying);
-                                    props.setCurrentPage('stock');
-                                }}>Go to {contract.underlying} </button>
-                                {(contract.amt_of_contracts - contract.amt_sold)
-                                    + " contracts worth $" + contract.ask + " purchased for $" + contract.price_at_purchase / 100}
-                                <Sell
+                                <button className={styles.GoToButton} onClick={() => setExpired(contract.underlying)}>Ashamed? Mark as seen</button>
+                                <h4>Option ticker: {contract.underlying}</h4>
+
+                                { (contract.amt_of_contracts - contract.amt_sold)
+                                    + " contracts worth $" + contract.ask + " purchased for $" + contract.price_at_purchase}
+                                <div>You {contract.ask - contract.price_at_purchase >= 0 ? "profited " : "lost "}
+                                ${contract.ask * contract.amt_of_contracts - contract.price_at_purchase * contract.amt_of_contracts} </div>
+                                {contract.description != "expired" && <Sell
                                     userId={userId}
                                     purchaseId={contract.option_purchase_id}
                                     ticker={contract.option_symbol}
@@ -183,7 +198,7 @@ function UserFeed(props: any) {
                                     isOption={true}
                                     updateStockPositions={() => getUserContracts()}
                                     updateNavbar={() => props.updateNavbar()}
-                                />
+                                />}
                             </div>
                         );
                     })}
