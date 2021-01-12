@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/wallstreetbetsfrontend/static/css/main.6f7d040a.chunk.css",
+    "main.js": "/wallstreetbetsfrontend/static/js/main.4f4d9b19.chunk.js",
+    "main.js.map": "/wallstreetbetsfrontend/static/js/main.4f4d9b19.chunk.js.map",
+    "runtime-main.js": "/wallstreetbetsfrontend/static/js/runtime-main.37d0c47f.js",
+    "runtime-main.js.map": "/wallstreetbetsfrontend/static/js/runtime-main.37d0c47f.js.map",
+    "static/js/2.d511b57e.chunk.js": "/wallstreetbetsfrontend/static/js/2.d511b57e.chunk.js",
+    "static/js/2.d511b57e.chunk.js.map": "/wallstreetbetsfrontend/static/js/2.d511b57e.chunk.js.map",
+    "static/js/3.6a5b4e6c.chunk.js": "/wallstreetbetsfrontend/static/js/3.6a5b4e6c.chunk.js",
+    "static/js/3.6a5b4e6c.chunk.js.map": "/wallstreetbetsfrontend/static/js/3.6a5b4e6c.chunk.js.map",
+    "index.html": "/wallstreetbetsfrontend/index.html",
+    "static/css/main.6f7d040a.chunk.css.map": "/wallstreetbetsfrontend/static/css/main.6f7d040a.chunk.css.map",
+    "static/js/2.d511b57e.chunk.js.LICENSE.txt": "/wallstreetbetsfrontend/static/js/2.d511b57e.chunk.js.LICENSE.txt",
+    "static/media/deskImage.ca6b6f13.webp": "/wallstreetbetsfrontend/static/media/deskImage.ca6b6f13.webp",
+    "static/media/grandtheftoptions.578024e5.png": "/wallstreetbetsfrontend/static/media/grandtheftoptions.578024e5.png",
+    "static/media/logo.9c5af943.jpeg": "/wallstreetbetsfrontend/static/media/logo.9c5af943.jpeg",
+    "static/media/stonksgoup.f60d9269.jpeg": "/wallstreetbetsfrontend/static/media/stonksgoup.f60d9269.jpeg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.37d0c47f.js",
+    "static/js/2.d511b57e.chunk.js",
+    "static/css/main.6f7d040a.chunk.css",
+    "static/js/main.4f4d9b19.chunk.js"
+  ]
+}
