@@ -43,7 +43,7 @@ function UserFeed(props: any) {
 
     const getUserStocks = () => {
         if (userId != -1) {
-            axios.get("http://localhost:5000/transaction/getSpecificPosition", {
+            axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/getSpecificPosition", {
                 params: {
                     'userId': userId
                 }
@@ -57,7 +57,7 @@ function UserFeed(props: any) {
 
     const getUserContracts = () => {
         if (userId != -1) {
-            axios.get("http://localhost:5000/transaction/getSpecificOptionPosition", {
+            axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/getSpecificOptionPosition", {
                 params: {
                     'userId': userId
                 }
@@ -71,7 +71,7 @@ function UserFeed(props: any) {
 
     const setExpired = (underlying: string, optionPurchaseId: number) => {
         if (userId != -1) {
-            axios.post("http://localhost:5000/transaction/setOptionToExpired", {
+            axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/setOptionToExpired", {
                 "userId": userId,
                 "optionSymbol": underlying,
                 "optionPurchaseId": optionPurchaseId
@@ -88,7 +88,7 @@ function UserFeed(props: any) {
 
         if (searchInput.length > 0) {
 
-            axios.get("http://localhost:5000/stockData/searchBySymbol", {
+            axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/stockData/searchBySymbol", {
                 params: {
                     'input': searchInput
                 }

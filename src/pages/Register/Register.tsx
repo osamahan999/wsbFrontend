@@ -19,7 +19,7 @@ function Register(props: any) {
     const handleSubmit = () => {
         if (username == '' || password == '') setMessage("Cannot have empty input");
         else {
-            axios.post("http://localhost:5000/user/userRegister", {
+            axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/user/userRegister", {
                 email: email,
                 username: username,
                 password: password

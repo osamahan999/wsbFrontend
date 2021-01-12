@@ -41,7 +41,7 @@ function App() {
 
   const logIn = (token: string) => {
 
-    axios.post("http://localhost:5000/user/loginWithToken", {
+    axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/user/loginWithToken", {
       token: token
 
     }).then((response: AxiosResponse) => {
@@ -63,7 +63,7 @@ function App() {
    * @param token 
    */
   const updateNavbar = (token: string) => {
-    axios.post("http://localhost:5000/user/loginWithToken", {
+    axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/user/loginWithToken", {
       token: token
 
     }).then((response: AxiosResponse) => {
@@ -103,7 +103,7 @@ function App() {
 
     setIsLoading(true);
 
-    axios.post("http://localhost:5000/user/logout", {
+    axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/user/logout", {
       token: token
 
     }).then((response: AxiosResponse) => {
