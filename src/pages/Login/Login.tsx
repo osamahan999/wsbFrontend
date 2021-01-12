@@ -23,7 +23,7 @@ function Login(props: any) {
             setIsLoading(true);
 
 
-            axios.post("http://localhost:5000/user/loginWithoutToken", {
+            axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/user/loginWithoutToken", {
                 username: username,
                 password: password
 

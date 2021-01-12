@@ -20,7 +20,7 @@ function Sell(props: any) {
 
         setIsLoading(true);
         if (amtToSell <= props.amtOwned) {
-            axios.post("http://localhost:5000/transaction/sellContract", {
+            axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/sellContract", {
                 userId: props.userId,
                 optionPurchaseId: props.purchaseId,
                 amtToSell: amtToSell,
@@ -45,7 +45,7 @@ function Sell(props: any) {
         setIsLoading(true);
         if (amtToSell <= props.amtOwned) {
 
-            axios.post("http://localhost:5000/transaction/sellStock", {
+            axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/sellStock", {
                 userId: props.userId,
                 purchaseId: props.purchaseId,
                 amtToSell: amtToSell,

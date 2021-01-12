@@ -67,7 +67,7 @@ function Profile(props: any) {
 
             setLoading(true);
 
-            axios.get("http://localhost:5000/transaction/getUserStockHistory", {
+            axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/getUserStockHistory", {
                 params: {
                     "userId": props.currentUser.user_id,
                     "salesOrPurchases": salesOrPurchases,
@@ -104,7 +104,7 @@ function Profile(props: any) {
             setLoading(true);
 
 
-            axios.get("http://localhost:5000/transaction/getUserContractHistory", {
+            axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/getUserContractHistory", {
                 params: {
                     "userId": props.currentUser.user_id,
                     "salesOrPurchases": salesOrPurchases,

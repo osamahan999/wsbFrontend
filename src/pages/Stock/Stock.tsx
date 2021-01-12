@@ -79,7 +79,7 @@ function Stock(props: any) {
 
     //Gets stock details
     const getCurrentStockDetails = () => {
-        axios.get("http://localhost:5000/stockData/getStockQuote", {
+        axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/stockData/getStockQuote", {
             params: {
                 'symbol': props.stock
             }
@@ -93,7 +93,7 @@ function Stock(props: any) {
 
     const getStockPositions = () => {
         //Gets your positions on this stock
-        axios.get("http://localhost:5000/transaction/getSpecificPosition", {
+        axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/getSpecificPosition", {
             params: {
                 "userId": props.currentUser.user_id,
                 "stockSymbol": props.stock
@@ -108,7 +108,7 @@ function Stock(props: any) {
 
     const getStockOptionPositions = () => {
         //Gets your option positions on this stock
-        axios.get("http://localhost:5000/transaction/getSpecificOptionPosition", {
+        axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/getSpecificOptionPosition", {
             params: {
                 "userId": props.currentUser.user_id,
                 "stockSymbol": props.stock
@@ -132,7 +132,7 @@ function Stock(props: any) {
     useEffect(() => {
 
 
-        axios.get("http://localhost:5000/stockData/getExpirations", {
+        axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/stockData/getExpirations", {
             params: {
                 'symbol': props.stock
             }
@@ -150,7 +150,7 @@ function Stock(props: any) {
      */
     const purchaseStock = () => {
         if (amtStocksToPurchase > 0) {
-            axios.post("http://localhost:5000/transaction/purchaseStock", {
+            axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/purchaseStock", {
                 token: cookieToken.getToken(),
                 password: userPw,
                 stockSymbol: currentStock.symbol,
@@ -184,7 +184,7 @@ function Stock(props: any) {
     */
     const purchaseOption = () => {
         if (amtOfContractsToPurchase > 0) {
-            axios.post("http://localhost:5000/transaction/purchaseOption", {
+            axios.post("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/transaction/purchaseOption", {
                 token: cookieToken.getToken(),
                 password: userPw,
                 optionSymbol: optionInView.symbol,
@@ -218,7 +218,7 @@ function Stock(props: any) {
     const getOptions = (symbol: string, date: string) => {
         setLoadingOptions(true);
 
-        axios.get("http://localhost:5000/stockData/getOptionsOnDate", {
+        axios.get("https://wallstreet-bets-tycoon-backend.uc.r.appspot.com/stockData/getOptionsOnDate", {
             params: {
                 'symbol': symbol,
                 'expiration': date,
