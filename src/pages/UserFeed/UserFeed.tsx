@@ -69,11 +69,12 @@ function UserFeed(props: any) {
         }
     }
 
-    const setExpired = (underlying: string) => {
+    const setExpired = (underlying: string, optionPurchaseId: number) => {
         if (userId != -1) {
             axios.post("http://localhost:5000/transaction/setOptionToExpired", {
                 "userId": userId,
-                "optionSymbol": underlying
+                "optionSymbol": underlying,
+                "optionPurchaseId": optionPurchaseId
             }).then((response: AxiosResponse) => {
                 getUserContracts();
                 console.log(response.data);
@@ -182,7 +183,7 @@ function UserFeed(props: any) {
                         if (contract != null) return (
                             <div className={styles.PositionData}>
                                 <h4>{contract.description}</h4>
-                                <button className={styles.GoToButton} onClick={() => setExpired(contract.underlying)}>Ashamed? Mark as seen</button>
+                                <button className={styles.GoToButton} onClick={() => setExpired(contract.underlying, contract.option_purchase_id)}>Ashamed? Mark as seen</button>
                                 <h4>Option ticker: {contract.underlying}</h4>
 
                                 { (contract.amt_of_contracts - contract.amt_sold)

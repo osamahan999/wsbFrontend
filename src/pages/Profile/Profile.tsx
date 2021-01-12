@@ -21,6 +21,9 @@ function Profile(props: any) {
     const [salesOrPurchases, setSalesOrPurchases] = useState<String>("sales");
     const [filterBySymbol, setFilterBySymbol] = useState<String>();
 
+    const [stockSalesNet, setStockSalesNet] = useState<number>(0);
+    const [optionSalesNet, setOptionsSalesNet] = useState<number>(0);
+
     const [loading, setLoading] = useState<boolean>(false);
 
 
@@ -76,6 +79,17 @@ function Profile(props: any) {
 
                 setLoading(false);
 
+                if (salesOrPurchases == "sales") {
+                    let sum: number = 0;
+                    for (let i = 0; i < response.data.length; i++) {
+                        sum += (Math.round(((response.data[i].price_at_sale * response.data[i].amt_sold)
+                            - (response.data[i].price_at_purchase * response.data[i].amt_sold)) * 100) / 100)
+                    }
+
+                    setStockSalesNet(sum);
+                }
+
+
             }).catch((error: AxiosError) => {
                 console.log(error.response)
 
@@ -102,6 +116,16 @@ function Profile(props: any) {
 
                 setLoading(false);
 
+
+                if (salesOrPurchases == "sales") {
+                    let sum: number = 0;
+                    for (let i = 0; i < response.data.length; i++) {
+                        sum += ((response.data[i].price_at_sale * response.data[i].amt_sold)
+                            - (response.data[i].price_at_purchase * response.data[i].amt_sold))
+                    }
+
+                    setOptionsSalesNet(sum);
+                }
             }).catch((error: AxiosError) => {
                 console.log(error.response)
 
@@ -141,11 +165,13 @@ function Profile(props: any) {
                         {stocksOrContracts == "stocks" ?
                             <div>
                                 <h3>Your stock {salesOrPurchases} history</h3>
+                                {salesOrPurchases == "sales" && <div>Net gain/loss: ${stockSalesNet}</div>}
                                 {renderedStockHistory.length != 0 && renderedStockHistory.map((position) => {
                                     return (
 
                                         salesOrPurchases == "sales" ?
                                             <div>
+
                                                 <h3>{position.stock_symbol}</h3>
                                                 <div> Sold {position.amt_sold} shares on
                                          {" " + (new Date(position.date_sold)).toDateString()} for ${position.price_at_sale} each</div>
@@ -175,6 +201,7 @@ function Profile(props: any) {
                             :
                             <div>
                                 <h3>Your contract {salesOrPurchases} history</h3>
+                                {salesOrPurchases == "sales" && <div>Net gain/loss: ${optionSalesNet}</div>}
                                 {renderedStockHistory.length != 0 &&
                                     renderedStockHistory.map((position) => {
                                         return (
