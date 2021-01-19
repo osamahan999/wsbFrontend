@@ -42,7 +42,7 @@ function Login(props: any) {
 
                 //add token and shit to localstorage
             }).catch((err: AxiosError) => {
-                if (err.response != null) setMessage(err.response.data);
+                if (err.response != null) setMessage(err.response.data.message);
                 setIsLoading(false);
 
 
