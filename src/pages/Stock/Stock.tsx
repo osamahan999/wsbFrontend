@@ -86,7 +86,7 @@ function Stock(props: any) {
         }).then((response: AxiosResponse) => {
             setCurrentStock(response.data);
         }).catch((err: AxiosError) => {
-            alert(err.response);
+            if (err.response != undefined) alert(err.response.data.message);
 
         })
     }

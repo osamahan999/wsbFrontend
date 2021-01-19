@@ -70,7 +70,7 @@ function App() {
       setCurrentUser(response.data[0]);
 
     }).catch((err: AxiosError) => {
-      alert(err);
+      if (err.response != undefined) alert(err.response.data.message);
 
     })
   }
@@ -115,7 +115,7 @@ function App() {
       setIsLoading(false);
 
     }).catch((err: AxiosError) => {
-      alert(err.response);
+      if (err.response != undefined) alert(err.response.data.message);
       setIsLoading(false);
 
     })
