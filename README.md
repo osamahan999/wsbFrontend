@@ -1,6 +1,7 @@
 
 Visit this project!
 Wallstreet Bets Tycoon: https://osamahan999.github.io/wsbFrontend/
+The backend is offline because I am out of google cloud credits :(
 
 
 To run on your own machine:
